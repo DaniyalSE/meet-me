@@ -4,38 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Syed Daniyal Haider Naqvi | AI/ML Enthusiast with Galaxy Visualizer</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdn.tailwindcss.com"></script> 
-    
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-color: #FF3B30; 
-            --secondary-color: #50E3C2; /* Kept for other potential uses, but profile pic uses highlight now */
-            --highlight-color: #F5A623; /* Orange-Yellow */
-            --highlight-color-rgb: 245, 166, 35; /* RGB for highlight color */
-            --bg-color: #0c0c1d; /* Darker, space-like background */
-            --text-color: #FFFFFF; 
-            --card-bg: rgba(34, 34, 34, 0.85); /* Slightly transparent cards */
+            --primary-color: #FF3B30;
+            --secondary-color: #50E3C2;
+            --highlight-color: #F5A623;
+            --highlight-color-rgb: 245, 166, 35;
+            --bg-color: #0c0c1d;
+            --text-color: #FFFFFF;
+            --card-bg: rgba(34, 34, 34, 0.85);
             --shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
             --highlight-shadow: 0 8px 25px rgba(var(--highlight-color-rgb), 0.3);
-            --text-shadow-light: 0 1px 3px rgba(0,0,0,0.5); /* For light text on dynamic bg */
+            --text-shadow-light: 0 1px 3px rgba(0,0,0,0.5);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
             line-height: 1.6;
             padding: 20px;
@@ -45,185 +36,71 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            background-color: transparent; 
+            background-color: transparent; /* Canvas will be background */
         }
-
         #particleCanvas {
-            position: fixed; 
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1; 
+            z-index: -1;
         }
-
         #loadingIndicator {
-            position: fixed; 
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 1.2rem;
-            background-color: rgba(0,0,0,0.7);
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            display: none; 
-            z-index: 30; 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #fff; font-size: 1.2rem; background-color: rgba(0,0,0,0.7);
+            padding: 1rem 1.5rem; border-radius: 0.5rem; display: none; z-index: 30;
         }
-
         .linktree-main-content {
-            position: relative; 
-            z-index: 10;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px; 
-            overflow-y: auto; 
-            max-height: 100vh; 
+            position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column;
+            align-items: center; padding: 20px; overflow-y: auto; max-height: 100vh;
         }
-
-        .profile {
-            text-align: center;
-            margin-bottom: 40px; 
-            transition: transform 0.4s ease-in-out;
-        }
+        .profile { text-align: center; margin-bottom: 40px; transition: transform 0.4s ease-in-out; }
         .profile-pic {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            background-size: cover; 
-            background-position: center center; 
-            border: 3px solid var(--highlight-color); /* MODIFIED BORDER COLOR */
-            margin-bottom: 15px;
+            width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
+            background-size: cover; background-position: center center;
+            border: 3px solid var(--highlight-color); margin-bottom: 15px;
             transition: transform 0.6s ease-in-out, box-shadow 0.3s ease;
-            box-shadow: 0 0 15px rgba(var(--highlight-color-rgb), 0.5); /* MODIFIED SHADOW COLOR */
+            box-shadow: 0 0 15px rgba(var(--highlight-color-rgb), 0.5);
         }
-        .profile:hover .profile-pic {
-            transform: rotate(360deg) scale(1.05); 
-            box-shadow: 0 0 25px rgba(var(--highlight-color-rgb), 0.8); /* MODIFIED HOVER SHADOW COLOR */
-        }
-        .profile h1 { /* NAME */
-            font-size: 36px; /* MODIFIED from 28px */
-            margin-bottom: 5px;
-            font-weight: 700;
-            text-shadow: var(--text-shadow-light);
-        }
-        .profile .title { /* AI/ML ENTHUSIAST | DEVELOPER */
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 24px; /* MODIFIED from 20px */
-            text-shadow: var(--text-shadow-light);
-        }
-        .profile .contact { /* EMAIL */
-            color: #bbb;
-            font-size: 16px; /* MODIFIED from 15px */
-            margin-bottom: 15px;
-            text-shadow: var(--text-shadow-light);
-        }
-        .profile .skills { /* AI/ML | DEEP LEARNING | PYTHON | CV */
-            margin-top: 20px;
-            font-size: 19px; /* MODIFIED from 17px */
-            color: var(--highlight-color);
-            font-weight: 600;
-            text-shadow: var(--text-shadow-light);
-        }
-
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 18px; 
-            width: 100%;
-            max-width: 580px; 
-        }
+        .profile:hover .profile-pic { transform: rotate(360deg) scale(1.05); box-shadow: 0 0 25px rgba(var(--highlight-color-rgb), 0.8); }
+        .profile h1 { font-size: 36px; margin-bottom: 5px; font-weight: 700; text-shadow: var(--text-shadow-light); }
+        .profile .title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; font-size: 24px; text-shadow: var(--text-shadow-light); }
+        .profile .contact { color: #bbb; font-size: 16px; margin-bottom: 15px; text-shadow: var(--text-shadow-light); }
+        .profile .skills { margin-top: 20px; font-size: 19px; color: var(--highlight-color); font-weight: 600; text-shadow: var(--text-shadow-light); }
+        .links { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 580px; }
         .link-item {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            padding: 18px 22px; 
-            border-radius: 12px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 22px; 
-            box-shadow: var(--shadow);
+            background-color: var(--card-bg); color: var(--text-color); padding: 18px 22px;
+            border-radius: 12px; text-decoration: none; display: flex; align-items: center;
+            gap: 22px; box-shadow: var(--shadow);
             transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-            font-size: 18px; 
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.1); 
+            font-size: 18px; position: relative; border: 1px solid rgba(255,255,255,0.1);
         }
         .link-item:hover {
-            transform: translateY(-6px) scale(1.02); 
-            box-shadow: var(--highlight-shadow);
-            background-color: var(--highlight-color);
-            color: #111; 
-            border-color: var(--highlight-color);
+            transform: translateY(-6px) scale(1.02); box-shadow: var(--highlight-shadow);
+            background-color: var(--highlight-color); color: #111; border-color: var(--highlight-color);
         }
-        .link-item:hover .link-icon {
-            color: #111; 
-        }
-        .link-icon {
-            font-size: 28px; 
-            transition: color 0.3s ease;
-            width: 30px; 
-            text-align: center;
-        }
-        .link-text {
-            flex: 1;
-            font-weight: bold;
-            text-shadow: var(--text-shadow-light);
-        }
+        .link-item:hover .link-icon { color: #111; }
+        .link-icon { font-size: 28px; transition: color 0.3s ease; width: 30px; text-align: center; }
+        .link-text { flex: 1; font-weight: bold; text-shadow: var(--text-shadow-light); }
         .badge {
-            background-color: rgba(226, 232, 240, 0.8); 
-            color: var(--primary-color); 
-            padding: 3px 10px; 
-            border-radius: 12px;
-            font-size: 11px; 
-            font-weight: 700; 
-            margin-left: 8px;
+            background-color: rgba(226, 232, 240, 0.8); color: var(--primary-color);
+            padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px;
         }
-        .link-item:hover .badge {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        footer {
-            margin-top: 50px;
-            padding-bottom: 20px; 
-            text-align: center;
-            color: #aaa; 
-            font-size: 13px; 
-            text-shadow: var(--text-shadow-light);
-        }
-        footer i { 
-            color: var(--primary-color); 
-            margin: 0 3px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media screen and (max-width: 768px) { /* Tablet */
-            .profile h1 { font-size: 28px; } /* MODIFIED from 24px */
-            .profile .title { font-size: 20px; } /* MODIFIED from 18px */
-            .profile .skills { font-size: 17px; } /* MODIFIED from 15px */
+        .link-item:hover .badge { background-color: var(--bg-color); color: var(--text-color); }
+        footer { margin-top: 50px; padding-bottom: 20px; text-align: center; color: #aaa; font-size: 13px; text-shadow: var(--text-shadow-light); }
+        footer i { color: var(--primary-color); margin: 0 3px; }
+        @media screen and (max-width: 768px) {
+            .profile h1 { font-size: 28px; } .profile .title { font-size: 20px; } .profile .skills { font-size: 17px; }
             .links { gap: 15px; max-width: 90%; }
-            .link-item { font-size: 16px; padding: 15px 20px; gap: 15px; }
-            .link-icon { font-size: 24px; }
+            .link-item { font-size: 16px; padding: 15px 20px; gap: 15px; } .link-icon { font-size: 24px; }
         }
-         @media screen and (max-width: 480px) { /* Mobile */
-            body { padding: 10px; }
-            .linktree-main-content { padding: 10px; }
+        @media screen and (max-width: 480px) {
+            body { padding: 10px; } .linktree-main-content { padding: 10px; }
             .profile-pic { width: 100px; height: 100px; }
-            .profile h1 { font-size: 22px; } /* MODIFIED from 20px */
-            .profile .title { font-size: 18px; } /* MODIFIED from 16px */
-            .profile .skills { font-size: 15px; } /* MODIFIED from 14px */
+            .profile h1 { font-size: 22px; } .profile .title { font-size: 18px; } .profile .skills { font-size: 15px; }
             .links { gap: 12px; }
-            .link-item { font-size: 14px; padding: 12px 15px; }
-            .link-icon { font-size: 20px; }
+            .link-item { font-size: 14px; padding: 12px 15px; } .link-icon { font-size: 20px; }
         }
     </style>
 </head>
@@ -236,107 +113,85 @@
             <div class="profile-pic" style="background-image: url('https://media.licdn.com/dms/image/D4D03AQH1X2Xn9n-YCA/profile-displayphoto-shrink_400_400/0/1708024768037?e=1721260800&v=beta&t=11_vY4n0AfvM10jXJ3vK6VTk5z75p_x_o8rtNuq_CMk');"></div>
             <h1>Syed Daniyal Haider Naqvi</h1>
             <div class="title">AI/ML Enthusiast | Developer</div>
-            <div class="contact">
-                naqvidaniya598@gmail.com
-            </div>
-            <div class="skills">
-                <p>AI/ML | Deep Learning | Python | CV</p>
-            </div>
+            <div class="contact">naqvidaniya598@gmail.com</div>
+            <div class="skills"><p>AI/ML | Deep Learning | Python | CV</p></div>
         </div>
-
         <div class="links">
             <a href="https://www.linkedin.com/in/syeddaniyalnaqvi/" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fab fa-linkedin-in"></i></div>
-                <div class="link-text">LinkedIn Profile</div>
+                <div class="link-icon"><i class="fab fa-linkedin-in"></i></div> <div class="link-text">LinkedIn Profile</div>
             </a>
-            
             <a href="https://github.com/DaniyalSE" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fab fa-github"></i></div>
-                <div class="link-text">GitHub Profile</div>
+                <div class="link-icon"><i class="fab fa-github"></i></div> <div class="link-text">GitHub Profile</div>
             </a>
-            
             <a href="https://drive.google.com/file/d/1VM9R6AureqCIAF5p3Hmr04GWhYPrdzXz/view?usp=sharing" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fas fa-file-pdf"></i></div>
-                <div class="link-text">View Resume</div>
-                <div class="badge">PDF</div>
+                <div class="link-icon"><i class="fas fa-file-pdf"></i></div> <div class="link-text">View Resume</div> <div class="badge">PDF</div>
             </a>
-            
             <a href="mailto:naqvidaniya598@gmail.com" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fas fa-envelope"></i></div>
-                <div class="link-text">Contact Me</div>
+                <div class="link-icon"><i class="fas fa-envelope"></i></div> <div class="link-text">Contact Me</div>
             </a>
         </div>
-
-        <footer>
-            <p>© <span id="currentYear"></span> Syed Daniyal Haider Naqvi.</p>
-        </footer>
+        <footer><p>© <span id="currentYear"></span> Syed Daniyal Haider Naqvi.</p></footer>
     </div>
 
     <script>
         let scene, camera, renderer, controls;
         let particlesMesh, particleMaterial, particleGeometry;
-        
-        const mouse = new THREE.Vector2(Infinity, Infinity); 
+        let galaxyRotationAngle = 0; // Angle for the galaxy's own rotation
+
+        const mouse = new THREE.Vector2(Infinity, Infinity);
         const raycaster = new THREE.Raycaster();
         let mouse3D = new THREE.Vector3();
 
-        // Galaxy color palette
         const galaxyColors = [
-            new THREE.Color("#5B80E5"), // Bright Blue
-            new THREE.Color("#483D8B"), // Dark Slate Blue / Purple
-            new THREE.Color("#C070F0"), // Light Purple / Pinkish
-            new THREE.Color("#FF69B4"), // Hot Pink (for nebulas)
-            new THREE.Color("#FFFFFF"), // White (stars)
-            new THREE.Color("#ADD8E6"), // Light Blue (stars/gas)
-            new THREE.Color("#E6E6FA"), // Lavender (faint gas)
-            new THREE.Color("#B8860B"),  // Dark Yellowish
-            new THREE.Color("#F5A623"),  // Bright Yellowish (Highlight Color from CSS) - ADDED
-            new THREE.Color("#B8860B"),  // Dark Yellowish (repeated for more presence) - ADDED
-            new THREE.Color("#F5A623"),  // Bright Yellowish (repeated for more presence) - ADDED
-            new THREE.Color("#B8860B")   // Dark Yellowish (repeated for more presence) - ADDED
+            new THREE.Color("#5B80E5"), new THREE.Color("#483D8B"), new THREE.Color("#C070F0"),
+            new THREE.Color("#FF69B4"), new THREE.Color("#FFFFFF"), new THREE.Color("#ADD8E6"),
+            new THREE.Color("#E6E6FA"), new THREE.Color("#B8860B"), new THREE.Color("#F5A623"),
+            new THREE.Color("#B8860B"), new THREE.Color("#F5A623"), new THREE.Color("#B8860B")
         ];
 
-        // Fixed parameters for the galaxy background
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+
         const fixedParams = {
             shape: 'galaxy',
-            particleCount: 25000, 
-            particleSize: 0.25,    // MODIFIED from 0.4
-            particleOpacity: 0.65, 
+            particleCount: isMobile ? 7000 : 12000,
+            particleSize: isMobile ? 0.11 : 0.18,
+            particleOpacity: 0.60,
             mouseRepel: true,
-            repelStrength: 35, 
-            backgroundColor: '#0c0c1d', 
-            animationSpeed: 0, 
+            repelStrength: isMobile ? 18 : 28,
+            backgroundColor: '#0c0c1d',
+            particleSpinSpeed: 0.002, // Speed of the galaxy's own rotation (positive for anti-clockwise from typical math sense)
         };
 
-        const particleLoadingIndicator = document.getElementById('loadingIndicator'); 
-        const particleCanvasElement = document.getElementById('particleCanvas'); 
+        const particleLoadingIndicator = document.getElementById('loadingIndicator');
+        const particleCanvasElement = document.getElementById('particleCanvas');
 
         function initParticles() {
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(fixedParams.backgroundColor); 
+            scene.background = new THREE.Color(fixedParams.backgroundColor);
 
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-            camera.position.z = 70; 
+            camera.position.z = isMobile ? 90 : 70; // Adjusted camera distance
 
-            renderer = new THREE.WebGLRenderer({ canvas: particleCanvasElement, antialias: true });
+            renderer = new THREE.WebGLRenderer({ canvas: particleCanvasElement, antialias: !isMobile });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.minDistance = 10;
-            controls.maxDistance = 350; 
-            controls.enablePan = false; 
-            controls.enableZoom = false; 
-            controls.autoRotate = true; 
-            controls.autoRotateSpeed = 0.15; 
+            controls.maxDistance = isMobile ? 180 : 300;
+            controls.enablePan = false;
+            controls.enableZoom = true; // Allow zoom for user to inspect
+            controls.autoRotate = false; // IMPORTANT: Disabled camera auto-rotation
 
             regenerateParticles();
 
             window.addEventListener('resize', onWindowResizeParticles, false);
-            document.addEventListener('mousemove', onMouseMoveParticles, false); 
-            
+            document.addEventListener('mousemove', onMouseMoveParticles, false);
+            document.addEventListener('touchmove', onTouchMoveParticles, { passive: false });
+            document.addEventListener('touchstart', onTouchMoveParticles, { passive: false });
+
             animateParticles();
         }
 
@@ -347,194 +202,154 @@
                     scene.remove(particlesMesh);
                     if (particleGeometry) particleGeometry.dispose();
                     if (particleMaterial) particleMaterial.dispose();
-                    particlesMesh = null; particleGeometry = null; particleMaterial = null;
                 }
 
                 const numParticles = Math.floor(fixedParams.particleCount);
-                const positions = new Float32Array(numParticles * 3);
-                const basePositions = new Float32Array(numParticles * 3); 
-                const colors = new Float32Array(numParticles * 3); 
+                // These initial positions are before any rotation is applied by the galaxy's spin
+                const initialStaticPositions = new Float32Array(numParticles * 3);
+                const colors = new Float32Array(numParticles * 3);
+                const shapeScale = isMobile ? 35 : 40;
 
-                const shapeScale = 45; 
-                
-                createGalaxyPositions(
-                    numParticles, 
-                    5,    // numArms
-                    0.3,  // armSpread
-                    0.1,  // rotationFactor
-                    shapeScale * 0.1,  // coreRadius
-                    shapeScale * 0.07, // thickness
-                    positions, 
-                    basePositions,
-                    colors 
+                createGalaxyPositions2D(
+                    numParticles, isMobile ? 3 : 4, 0.45, 0.12,
+                    shapeScale * (isMobile ? 0.07 : 0.09),
+                    initialStaticPositions, // Pass this array to be filled
+                    colors
                 );
 
                 particleGeometry = new THREE.BufferGeometry();
-                particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3)); 
-                particleGeometry.userData.basePositions = basePositions;
+                // The 'position' attribute will be updated dynamically based on rotated base positions + physics
+                particleGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(initialStaticPositions), 3));
+                particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                // Store the original, unrotated positions. These are the 'true' resting spots before galaxy spin.
+                particleGeometry.userData.initialStaticPositions = initialStaticPositions;
+                // This 'basePositions' array will store the target resting positions *after* the galaxy's spin is applied for the current frame.
+                particleGeometry.userData.basePositions = new Float32Array(initialStaticPositions); // Initialize with static, will be updated
+                particleGeometry.userData.velocities = new Float32Array(numParticles * 3).fill(0);
 
                 particleMaterial = new THREE.PointsMaterial({
                     size: parseFloat(fixedParams.particleSize),
                     opacity: parseFloat(fixedParams.particleOpacity),
-                    transparent: true, 
-                    sizeAttenuation: true, 
-                    depthWrite: false, 
-                    blending: THREE.AdditiveBlending,
-                    vertexColors: true 
+                    transparent: true, sizeAttenuation: true, depthWrite: false,
+                    blending: THREE.AdditiveBlending, vertexColors: true
                 });
 
                 particlesMesh = new THREE.Points(particleGeometry, particleMaterial);
                 scene.add(particlesMesh);
                 particleLoadingIndicator.style.display = 'none';
-            }, 50); 
+            }, 50);
         }
-        
-        function createSpherePositions(count, radius, positions, basePositions, colorsArray) { 
+        // Removed basePositions from createGalaxyPositions2D params as it's handled by initialStaticPositions now
+        function createGalaxyPositions2D(count, numArms, armSpread, rotationFactor, coreRadius, positionsArray, colorsArray) {
+            const maxDistFromCenter = isMobile ? 50 : 60;
             for (let i = 0; i < count; i++) {
-                const phi = Math.acos(-1 + (2 * i) / count); 
-                const theta = Math.sqrt(count * Math.PI) * phi;
-                const x = radius * Math.sin(phi) * Math.cos(theta);
-                const y = radius * Math.sin(phi) * Math.sin(theta);
-                const z = radius * Math.cos(phi);
-                positions[i * 3] = basePositions[i * 3] = x;
-                positions[i * 3 + 1] = basePositions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = basePositions[i * 3 + 2] = z;
-
-                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
-                colorsArray[i * 3] = color.r;
-                colorsArray[i * 3 + 1] = color.g;
-                colorsArray[i * 3 + 2] = color.b;
-            }
-        }
-        function createCubePositions(count, size, positions, basePositions, colorsArray) { 
-            const halfSize = size / 2;
-            for (let i = 0; i < count; i++) {
-                const x = Math.random() * size - halfSize;
-                const y = Math.random() * size - halfSize;
-                const z = Math.random() * size - halfSize;
-                positions[i * 3] = basePositions[i * 3] = x;
-                positions[i * 3 + 1] = basePositions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = basePositions[i * 3 + 2] = z;
-
-                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
-                colorsArray[i * 3] = color.r;
-                colorsArray[i * 3 + 1] = color.g;
-                colorsArray[i * 3 + 2] = color.b;
-            }
-        }
-        function createTorusPositions(count, R, r, positions, basePositions, colorsArray) { 
-            for (let i = 0; i < count; i++) {
-                const u = Math.random() * 2 * Math.PI;
-                const v = Math.random() * 2 * Math.PI;
-                const x = (R + r * Math.cos(v)) * Math.cos(u);
-                const y = (R + r * Math.cos(v)) * Math.sin(u);
-                const z = r * Math.sin(v);
-                positions[i * 3] = basePositions[i * 3] = x;
-                positions[i * 3 + 1] = basePositions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = basePositions[i * 3 + 2] = z;
-
-                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
-                colorsArray[i * 3] = color.r;
-                colorsArray[i * 3 + 1] = color.g;
-                colorsArray[i * 3 + 2] = color.b;
-            }
-        }
-        function createConePositions(count, height, baseRadius, positions, basePositions, colorsArray) { 
-            const halfHeight = height / 2;
-            for (let i = 0; i < count; i++) {
-                const y_norm = Math.random(); 
-                const y = y_norm * height - halfHeight;
-                const currentRadius = (1 - y_norm) * baseRadius;
                 const angle = Math.random() * 2 * Math.PI;
-                const r_sqrt = Math.sqrt(Math.random()); 
-                const x = Math.cos(angle) * currentRadius * r_sqrt;
-                const z = Math.sin(angle) * currentRadius * r_sqrt;
-                positions[i * 3] = basePositions[i * 3] = x;
-                positions[i * 3 + 1] = basePositions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = basePositions[i * 3 + 2] = z;
-
-                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
-                colorsArray[i * 3] = color.r;
-                colorsArray[i * 3 + 1] = color.g;
-                colorsArray[i * 3 + 2] = color.b;
-            }
-        }
-        function createGalaxyPositions(count, numArms, armSpread, rotationFactor, coreRadius, thickness, positions, basePositions, colorsArray) { 
-            const maxDistFromCenter = 70; 
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * 2 * Math.PI; 
-                const distFromCenter = coreRadius + Math.pow(Math.random(), 1.5) * (maxDistFromCenter - coreRadius); 
+                const distFromCenter = coreRadius + Math.pow(Math.random(), 1.6) * (maxDistFromCenter - coreRadius);
                 const armIndex = Math.floor(Math.random() * numArms);
                 const armOffsetAngle = (armIndex / numArms) * 2 * Math.PI;
-                const spiralAngle = distFromCenter * rotationFactor; 
+                const spiralAngle = distFromCenter * rotationFactor;
                 const totalAngle = angle * armSpread + armOffsetAngle + spiralAngle;
-                const x = Math.cos(totalAngle) * distFromCenter;
-                const y = Math.sin(totalAngle) * distFromCenter;
-                const z = (Math.random() - 0.5) * thickness * (1 - distFromCenter / maxDistFromCenter); 
-                positions[i * 3] = basePositions[i * 3] = x;
-                positions[i * 3 + 1] = basePositions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = basePositions[i * 3 + 2] = z;
 
-                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)]; // This will now pick more yellows
-                colorsArray[i * 3] = color.r;
+                positionsArray[i * 3]     = Math.cos(totalAngle) * distFromCenter; // x
+                positionsArray[i * 3 + 1] = Math.sin(totalAngle) * distFromCenter; // y
+                positionsArray[i * 3 + 2] = 0; // z
+
+                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
+                colorsArray[i * 3]     = color.r;
                 colorsArray[i * 3 + 1] = color.g;
                 colorsArray[i * 3 + 2] = color.b;
             }
         }
 
-        const tempParticlePosVec = new THREE.Vector3(); 
-        const tempDirectionVec = new THREE.Vector3();   
+        const tempParticlePosVec = new THREE.Vector3();
+        const tempDirectionVec = new THREE.Vector3();
 
         function animateParticles() {
             requestAnimationFrame(animateParticles);
-            if (particleGeometry && particleGeometry.attributes.position && particleGeometry.userData.basePositions) {
-                const positionsArray = particleGeometry.attributes.position.array;
-                const basePositionsArray = particleGeometry.userData.basePositions;
-                const effectiveRepelStrength = fixedParams.repelStrength;
-                const particleCount = Math.floor(fixedParams.particleCount); 
 
-                if (fixedParams.mouseRepel && mouse.x !== Infinity) {
-                    if (camera) {
-                        const planeNormal = camera.getWorldDirection(new THREE.Vector3());
-                        const interactionPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
-                            planeNormal,
-                            particlesMesh ? particlesMesh.position : new THREE.Vector3(0,0,0) 
-                        );
-                        raycaster.setFromCamera(mouse, camera);
-                        raycaster.ray.intersectPlane(interactionPlane, mouse3D); 
+            // Update the galaxy's own rotation angle
+            galaxyRotationAngle += fixedParams.particleSpinSpeed;
+            const cosSpinAngle = Math.cos(galaxyRotationAngle);
+            const sinSpinAngle = Math.sin(galaxyRotationAngle);
+
+            if (particleGeometry && particleGeometry.attributes.position && particleGeometry.userData.initialStaticPositions && particleGeometry.userData.basePositions) {
+                const positionsAttribute = particleGeometry.attributes.position; // Live positions being rendered
+                const currentPositionsArray = positionsAttribute.array;
+                const targetBasePositionsArray = particleGeometry.userData.basePositions; // Target resting positions after spin
+                const initialStaticPositionsArray = particleGeometry.userData.initialStaticPositions; // Original unrotated positions
+                const velocitiesArray = particleGeometry.userData.velocities;
+                const particleCountValue = Math.floor(fixedParams.particleCount);
+
+                // 1. Update the target 'basePositions' by rotating the 'initialStaticPositions'
+                for (let i = 0; i < particleCountValue; i++) {
+                    const ix = i * 3, iy = i * 3 + 1;
+                    const staticX = initialStaticPositionsArray[ix];
+                    const staticY = initialStaticPositionsArray[iy];
+
+                    targetBasePositionsArray[ix] = staticX * cosSpinAngle - staticY * sinSpinAngle;
+                    targetBasePositionsArray[iy] = staticX * sinSpinAngle + staticY * cosSpinAngle;
+                    targetBasePositionsArray[i * 3 + 2] = 0; // Z is always 0 for base
+                }
+
+                // 2. Handle mouse/touch interaction to update mouse3D
+                if (fixedParams.mouseRepel && mouse.x !== Infinity && mouse.y !== Infinity) {
+                    if (camera && particlesMesh) {
+                        const vec = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+                        vec.unproject(camera);
+                        const dir = vec.sub(camera.position).normalize();
+                        const distance = -camera.position.z / dir.z;
+                        mouse3D.copy(camera.position).add(dir.multiplyScalar(distance));
+                        mouse3D.z = 0;
                     }
                 } else {
-                    mouse3D.set(Infinity, Infinity, Infinity); 
+                    mouse3D.set(Infinity, Infinity, Infinity);
                 }
 
-                for (let i = 0; i < particleCount; i++) {
+                // 3. Apply physics (repel, spring-back to rotated base, velocity, damping) to 'currentPositionsArray'
+                for (let i = 0; i < particleCountValue; i++) {
                     const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
-                    
-                    positionsArray[ix] = basePositionsArray[ix];
-                    positionsArray[iy] = basePositionsArray[iy];
-                    positionsArray[iz] = basePositionsArray[iz];
 
-                    if (fixedParams.mouseRepel && effectiveRepelStrength > 0 && mouse3D.x !== Infinity) {
-                        tempParticlePosVec.set(positionsArray[ix], positionsArray[iy], positionsArray[iz]);
+                    tempParticlePosVec.set(currentPositionsArray[ix], currentPositionsArray[iy], 0); // Current live particle position
+
+                    // Apply mouse repel force to velocity
+                    if (fixedParams.mouseRepel && fixedParams.repelStrength > 0 && mouse3D.x !== Infinity) {
                         const distSq = tempParticlePosVec.distanceToSquared(mouse3D);
-                        const repelRadiusFactor = 0.85; 
-                        const repelRadiusSq = Math.pow(effectiveRepelStrength * repelRadiusFactor, 2); 
-                        if (distSq < repelRadiusSq && distSq > 0.0001) { 
-                            const repelEffectiveness = effectiveRepelStrength * repelRadiusFactor;
-                            const forceFactor = 1 - Math.sqrt(distSq) / repelEffectiveness; 
-                            tempDirectionVec.subVectors(tempParticlePosVec, mouse3D).normalize();
-                            const displacementMagnitude = forceFactor * effectiveRepelStrength * 0.2; 
-                            tempDirectionVec.multiplyScalar(displacementMagnitude);
-                            positionsArray[ix] += tempDirectionVec.x;
-                            positionsArray[iy] += tempDirectionVec.y;
-                            positionsArray[iz] += tempDirectionVec.z;
+                        const repelRadiusFactor = 0.90; // Slightly smaller interaction radius might feel better
+                        const repelRadiusSq = Math.pow(fixedParams.repelStrength * repelRadiusFactor, 2);
+
+                        if (distSq < repelRadiusSq && distSq > 0.00001) {
+                            const repelEffectiveness = fixedParams.repelStrength * repelRadiusFactor;
+                            const forceFactor = 1 - Math.sqrt(distSq) / repelEffectiveness;
+                            tempDirectionVec.subVectors(tempParticlePosVec, mouse3D).normalize(); // Direction away from mouse
+                            tempDirectionVec.z = 0; // Ensure force is 2D
+                            tempDirectionVec.normalize();
+
+                            const displacementMagnitude = forceFactor * fixedParams.repelStrength * (isMobile ? 0.12 : 0.18);
+                            velocitiesArray[ix] += tempDirectionVec.x * displacementMagnitude * 0.1;
+                            velocitiesArray[iy] += tempDirectionVec.y * displacementMagnitude * 0.1;
                         }
                     }
+
+                    // Apply spring force towards the (now rotated) target base position
+                    const springForceFactor = 0.07; // Slightly softer spring
+                    velocitiesArray[ix] += (targetBasePositionsArray[ix] - currentPositionsArray[ix]) * springForceFactor;
+                    velocitiesArray[iy] += (targetBasePositionsArray[iy] - currentPositionsArray[iy]) * springForceFactor;
+                    
+                    // Apply velocity to current position
+                    currentPositionsArray[ix] += velocitiesArray[ix];
+                    currentPositionsArray[iy] += velocitiesArray[iy];
+                    
+                    // Dampen velocity (friction)
+                    velocitiesArray[ix] *= 0.88; // Stronger damping for quicker settling
+                    velocitiesArray[iy] *= 0.88;
+
+                    currentPositionsArray[iz] = 0; // Force Z to 0 for rendering
                 }
-                particleGeometry.attributes.position.needsUpdate = true;
+                positionsAttribute.needsUpdate = true;
             }
-            if (controls) controls.update(); 
+
+            if (controls) controls.update(); // Still allow manual camera control
             if (renderer && scene && camera) renderer.render(scene, camera);
         }
 
@@ -545,17 +360,27 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
         }
+
         function onMouseMoveParticles(event) {
+            event.preventDefault();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
         }
 
+        function onTouchMoveParticles(event) {
+            if (event.touches.length > 0) {
+                // Allow page scroll if not directly over canvas, or if you prefer default scroll:
+                // if (event.target === particleCanvasElement) { event.preventDefault(); }
+                const touch = event.touches[0];
+                mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = - (touch.clientY / window.innerHeight) * 2 + 1;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const yearSpan = document.getElementById('currentYear');
-            if (yearSpan) {
-                yearSpan.textContent = new Date().getFullYear();
-            }
-            initParticles(); 
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+            initParticles();
         });
     </script>
 </body>
