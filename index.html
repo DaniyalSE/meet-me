@@ -106,7 +106,7 @@
 </head>
 <body>
     <canvas id="particleCanvas"></canvas>
-    <div id="loadingIndicator">Generating particles...</div>
+    <div id="loadingIndicator">Generating cosmic wonders...</div>
 
     <div class="linktree-main-content">
         <div class="profile">
@@ -136,41 +136,95 @@
     <script>
         let scene, camera, renderer, controls;
         let particlesMesh, particleMaterial, particleGeometry;
-        let galaxyRotationAngle = 0; // Angle for the galaxy's own rotation
+        let ambientStarsMesh; 
+        let galaxyRotationAngle = 0;
+
+        // NEW: Deep space stars
+        let deepSpaceStarsMesh;
 
         const mouse = new THREE.Vector2(Infinity, Infinity);
         const raycaster = new THREE.Raycaster();
         let mouse3D = new THREE.Vector3();
 
         const galaxyColors = [
-            new THREE.Color("#5B80E5"), new THREE.Color("#483D8B"), new THREE.Color("#C070F0"),
-            new THREE.Color("#FF69B4"), new THREE.Color("#FFFFFF"), new THREE.Color("#ADD8E6"),
-            new THREE.Color("#E6E6FA"), new THREE.Color("#B8860B"), new THREE.Color("#F5A623"),
-            new THREE.Color("#B8860B"), new THREE.Color("#F5A623"), new THREE.Color("#B8860B")
+            new THREE.Color("#4A55A2"), new THREE.Color("#5B80E5"), new THREE.Color("#7469B6"),
+            new THREE.Color("#483D8B"), new THREE.Color("#6A0DAD"), new THREE.Color("#C070F0"),
+            new THREE.Color("#FF69B4"), new THREE.Color("#D85070"), new THREE.Color("#FFFFFF"),
+            new THREE.Color("#F8F0E3"), new THREE.Color("#FFFACD"), new THREE.Color("#F5E8DD"),
+            new THREE.Color("#F5A623"), new THREE.Color("#FFD700"), new THREE.Color("#FFA500"),
+            new THREE.Color("#ADD8E6"), new THREE.Color("#B0E0E6"),
         ];
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (window.innerWidth <= 768);
 
         const fixedParams = {
             shape: 'galaxy',
-            particleCount: isMobile ? 7000 : 12000,
-            particleSize: isMobile ? 0.11 : 0.18,
-            particleOpacity: 0.60,
+            particleCount: isMobile ? 18000 : 45000, 
+            particleSize: isMobile ? 0.07 : 0.09,
+            particleOpacity: 0.65,
             mouseRepel: true,
-            repelStrength: isMobile ? 18 : 28,
+            repelStrength: isMobile ? 22 : 35,
             backgroundColor: '#0c0c1d',
-            particleSpinSpeed: 0.002, // Speed of the galaxy's own rotation (positive for anti-clockwise from typical math sense)
+            particleSpinSpeed: 0.0015,
         };
+
+        const fixedParamsAmbient = {
+            count: isMobile ? 1200 : 3500, // Slightly increased
+            size: isMobile ? 0.05 : 0.07,
+            opacity: 0.35,
+            baseColor: new THREE.Color("#FFFFFF"),
+            distributionRange: { // Slightly increased range
+                x: isMobile ? 400 : 700,
+                y: isMobile ? 400 : 700,
+                z: isMobile ? 350 : 600
+            }
+        };
+
+        // NEW: Parameters for Deep Space Stars
+        const fixedParamsDeepSpaceStars = {
+            count: isMobile ? 700 : 2000,
+            size: isMobile ? 0.03 : 0.04, // Smaller
+            opacity: 0.20, // Dimmer
+            baseColor: new THREE.Color("#B0C4DE"), // LightSteelBlue - dimmer, slightly bluer white
+            distributionRange: { // Much larger range
+                x: isMobile ? 900 : 1600,
+                y: isMobile ? 900 : 1600,
+                z: isMobile ? 800 : 1300
+            }
+        };
+
 
         const particleLoadingIndicator = document.getElementById('loadingIndicator');
         const particleCanvasElement = document.getElementById('particleCanvas');
 
+        let shootingStarMesh, shootingStarMaterial, shootingStarGeometry;
+        let shootingStarPool = [];
+        let lastShootingStarSpawnTime = 0;
+        let activeShootingStarCountForDebug = 0; // For console logging
+
+        // MODIFIED: Shooting Star parameters for better visibility (tune later)
+        const shootingStarParams = {
+            maxPoolCount: isMobile ? 4 : 6,      
+            spawnInterval: isMobile ? 1200 : 800, // More frequent for testing
+            spawnChance: 0.75,                   // Higher chance for testing
+            baseSpeed: isMobile ? 1.8 : 3.5,     // Adjusted speed
+            speedVariation: 0.7,
+            lifespan: isMobile ? 100 : 160,      // Longer lifespan for testing
+            headSize: isMobile ? 0.45 : 0.65,    // Larger head for testing
+            color: new THREE.Color("#FFFFFF"),    
+            headBrightness: 1.0,                 // Max brightness
+            trailSegments: isMobile ? 5 : 7,      
+        };
+
+
         function initParticles() {
+            particleLoadingIndicator.style.display = 'block'; 
+
             scene = new THREE.Scene();
             scene.background = new THREE.Color(fixedParams.backgroundColor);
 
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-            camera.position.z = isMobile ? 90 : 70; // Adjusted camera distance
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000); // Increased far plane for deep space stars
+            camera.position.z = isMobile ? 110 : 160;
 
             renderer = new THREE.WebGLRenderer({ canvas: particleCanvasElement, antialias: !isMobile });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -180,23 +234,30 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             controls.minDistance = 10;
-            controls.maxDistance = isMobile ? 180 : 300;
+            controls.maxDistance = isMobile ? 280 : 500; 
             controls.enablePan = false;
-            controls.enableZoom = true; // Allow zoom for user to inspect
-            controls.autoRotate = false; // IMPORTANT: Disabled camera auto-rotation
+            controls.enableZoom = true;
+            controls.autoRotate = false;
 
-            regenerateParticles();
+            regenerateParticles();      
+            regenerateAmbientStars();   
+            regenerateDeepSpaceStars(); // NEW: Generate deep space stars
+            initShootingStars();        
 
             window.addEventListener('resize', onWindowResizeParticles, false);
             document.addEventListener('mousemove', onMouseMoveParticles, false);
             document.addEventListener('touchmove', onTouchMoveParticles, { passive: false });
             document.addEventListener('touchstart', onTouchMoveParticles, { passive: false });
 
+            console.log("Scene initialized. Look for shooting star spawn messages in console.");
             animateParticles();
+            
+            setTimeout(() => {
+                particleLoadingIndicator.style.display = 'none';
+            }, 1500); 
         }
 
         function regenerateParticles() {
-            particleLoadingIndicator.style.display = 'block';
             setTimeout(() => {
                 if (particlesMesh) {
                     scene.remove(particlesMesh);
@@ -205,27 +266,25 @@
                 }
 
                 const numParticles = Math.floor(fixedParams.particleCount);
-                // These initial positions are before any rotation is applied by the galaxy's spin
                 const initialStaticPositions = new Float32Array(numParticles * 3);
                 const colors = new Float32Array(numParticles * 3);
-                const shapeScale = isMobile ? 35 : 40;
+                
+                const shapeScale = isMobile ? 50 : 70;
+                const coreRadiusRatio = isMobile ? 0.07 : 0.09;
+                const coreRadius = shapeScale * coreRadiusRatio;
+                const depthSpread = isMobile ? 8 : 15;
 
-                createGalaxyPositions2D(
-                    numParticles, isMobile ? 3 : 4, 0.45, 0.12,
-                    shapeScale * (isMobile ? 0.07 : 0.09),
-                    initialStaticPositions, // Pass this array to be filled
-                    colors
+                createGalaxyPositions3D(
+                    numParticles, isMobile ? 3 : 4, 0.45, 0.12, coreRadius,
+                    isMobile ? 80 : 120, depthSpread, initialStaticPositions, colors
                 );
 
                 particleGeometry = new THREE.BufferGeometry();
-                // The 'position' attribute will be updated dynamically based on rotated base positions + physics
                 particleGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(initialStaticPositions), 3));
                 particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-                // Store the original, unrotated positions. These are the 'true' resting spots before galaxy spin.
                 particleGeometry.userData.initialStaticPositions = initialStaticPositions;
-                // This 'basePositions' array will store the target resting positions *after* the galaxy's spin is applied for the current frame.
-                particleGeometry.userData.basePositions = new Float32Array(initialStaticPositions); // Initialize with static, will be updated
+                particleGeometry.userData.basePositions = new Float32Array(initialStaticPositions);
                 particleGeometry.userData.velocities = new Float32Array(numParticles * 3).fill(0);
 
                 particleMaterial = new THREE.PointsMaterial({
@@ -237,23 +296,21 @@
 
                 particlesMesh = new THREE.Points(particleGeometry, particleMaterial);
                 scene.add(particlesMesh);
-                particleLoadingIndicator.style.display = 'none';
             }, 50);
         }
-        // Removed basePositions from createGalaxyPositions2D params as it's handled by initialStaticPositions now
-        function createGalaxyPositions2D(count, numArms, armSpread, rotationFactor, coreRadius, positionsArray, colorsArray) {
-            const maxDistFromCenter = isMobile ? 50 : 60;
+        
+        function createGalaxyPositions3D(count, numArms, armSpread, rotationFactor, coreRadius, maxDistFromCenter, depthSpread, positionsArray, colorsArray) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * 2 * Math.PI;
-                const distFromCenter = coreRadius + Math.pow(Math.random(), 1.6) * (maxDistFromCenter - coreRadius);
+                const distFromCenter = coreRadius + Math.pow(Math.random(), 0.9) * (maxDistFromCenter - coreRadius);
                 const armIndex = Math.floor(Math.random() * numArms);
                 const armOffsetAngle = (armIndex / numArms) * 2 * Math.PI;
                 const spiralAngle = distFromCenter * rotationFactor;
                 const totalAngle = angle * armSpread + armOffsetAngle + spiralAngle;
 
-                positionsArray[i * 3]     = Math.cos(totalAngle) * distFromCenter; // x
-                positionsArray[i * 3 + 1] = Math.sin(totalAngle) * distFromCenter; // y
-                positionsArray[i * 3 + 2] = 0; // z
+                positionsArray[i * 3]     = Math.cos(totalAngle) * distFromCenter;
+                positionsArray[i * 3 + 1] = Math.sin(totalAngle) * distFromCenter;
+                positionsArray[i * 3 + 2] = (Math.random() - 0.5) * depthSpread * (distFromCenter / maxDistFromCenter);
 
                 const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
                 colorsArray[i * 3]     = color.r;
@@ -262,68 +319,318 @@
             }
         }
 
+        function regenerateAmbientStars() {
+             if (ambientStarsMesh) {
+                scene.remove(ambientStarsMesh);
+                if (ambientStarsMesh.geometry) ambientStarsMesh.geometry.dispose();
+                if (ambientStarsMesh.material) ambientStarsMesh.material.dispose();
+            }
+
+            const numParticles = Math.floor(fixedParamsAmbient.count);
+            const positions = new Float32Array(numParticles * 3);
+            const colors = new Float32Array(numParticles * 3);
+
+            const rangeX = fixedParamsAmbient.distributionRange.x;
+            const rangeY = fixedParamsAmbient.distributionRange.y;
+            const rangeZ = fixedParamsAmbient.distributionRange.z;
+            const baseColor = fixedParamsAmbient.baseColor;
+
+            for (let i = 0; i < numParticles; i++) {
+                positions[i * 3]     = (Math.random() - 0.5) * 2 * rangeX;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 2 * rangeY;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 2 * rangeZ;
+
+                const variation = Math.random() * 0.4 + 0.6;
+                colors[i * 3]     = baseColor.r * variation;
+                colors[i * 3 + 1] = baseColor.g * variation;
+                colors[i * 3 + 2] = baseColor.b * variation;
+            }
+
+            const ambientGeometry = new THREE.BufferGeometry();
+            ambientGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            ambientGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const ambientMaterial = new THREE.PointsMaterial({
+                size: parseFloat(fixedParamsAmbient.size),
+                opacity: parseFloat(fixedParamsAmbient.opacity),
+                transparent: true,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending,
+                vertexColors: true
+            });
+
+            ambientStarsMesh = new THREE.Points(ambientGeometry, ambientMaterial);
+            scene.add(ambientStarsMesh);
+        }
+
+        // NEW: Function to generate deep space stars
+        function regenerateDeepSpaceStars() {
+            if (deepSpaceStarsMesh) {
+                scene.remove(deepSpaceStarsMesh);
+                if (deepSpaceStarsMesh.geometry) deepSpaceStarsMesh.geometry.dispose();
+                if (deepSpaceStarsMesh.material) deepSpaceStarsMesh.material.dispose();
+            }
+
+            const numParticles = Math.floor(fixedParamsDeepSpaceStars.count);
+            const positions = new Float32Array(numParticles * 3);
+            const colors = new Float32Array(numParticles * 3); // Will use for slight color variation
+
+            const rangeX = fixedParamsDeepSpaceStars.distributionRange.x;
+            const rangeY = fixedParamsDeepSpaceStars.distributionRange.y;
+            const rangeZ = fixedParamsDeepSpaceStars.distributionRange.z;
+            const baseColor = fixedParamsDeepSpaceStars.baseColor;
+
+            for (let i = 0; i < numParticles; i++) {
+                positions[i * 3]     = (Math.random() - 0.5) * 2 * rangeX;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 2 * rangeY;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 2 * rangeZ; // Spread them in Z too
+
+                const variation = Math.random() * 0.3 + 0.7; // 0.7 to 1.0 brightness
+                colors[i * 3]     = baseColor.r * variation;
+                colors[i * 3 + 1] = baseColor.g * variation;
+                colors[i * 3 + 2] = baseColor.b * variation;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: parseFloat(fixedParamsDeepSpaceStars.size),
+                opacity: parseFloat(fixedParamsDeepSpaceStars.opacity),
+                transparent: true,
+                sizeAttenuation: true,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending, 
+                vertexColors: true
+            });
+
+            deepSpaceStarsMesh = new THREE.Points(geometry, material);
+            scene.add(deepSpaceStarsMesh);
+        }
+
+
+        function initShootingStars() {
+            const numTotalPoints = shootingStarParams.maxPoolCount * shootingStarParams.trailSegments;
+            shootingStarGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(numTotalPoints * 3);
+            const colors = new Float32Array(numTotalPoints * 3); 
+
+            for(let i=0; i < numTotalPoints * 3; i++) {
+                positions[i] = Infinity; // Initialize off-screen
+            }
+
+            shootingStarGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            shootingStarGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            shootingStarMaterial = new THREE.PointsMaterial({
+                size: shootingStarParams.headSize,
+                transparent: true,
+                opacity: 1.0, 
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true,
+                depthWrite: false,
+                vertexColors: true
+            });
+
+            shootingStarMesh = new THREE.Points(shootingStarGeometry, shootingStarMaterial);
+            scene.add(shootingStarMesh);
+
+            for (let i = 0; i < shootingStarParams.maxPoolCount; i++) {
+                shootingStarPool.push({
+                    active: false,
+                    headPosition: new THREE.Vector3(),
+                    velocity: new THREE.Vector3(),
+                    age: 0,
+                    lifespan: 0,
+                    history: [], 
+                    baseBufferIndex: i * shootingStarParams.trailSegments,
+                    id: i // For debugging
+                });
+            }
+        }
+
+        function spawnShootingStar() {
+            let star = null;
+            let starIndex = -1;
+            for (let i = 0; i < shootingStarPool.length; i++) {
+                if (!shootingStarPool[i].active) {
+                    star = shootingStarPool[i];
+                    starIndex = i;
+                    break;
+                }
+            }
+            if (!star) return; 
+
+            star.active = true;
+            star.age = 0;
+            star.lifespan = shootingStarParams.lifespan * (1 + (Math.random() - 0.5) * 0.4); 
+
+            const spawnDist = Math.max(fixedParamsAmbient.distributionRange.x, fixedParamsAmbient.distributionRange.y) * 1.4 + 80; // Spawn further out
+            const angle = Math.random() * Math.PI * 2;
+            const side = Math.random() < 0.5 ? 1 : -1;
+
+            let startX, startY;
+            if (Math.random() < 0.5) { 
+                startX = spawnDist * side;
+                startY = (Math.random() - 0.5) * spawnDist * 1.3; 
+            } else { 
+                startX = (Math.random() - 0.5) * spawnDist * 1.3; 
+                startY = spawnDist * side;
+            }
+            // Ensure Z is not too far, but allow some variation
+            const startZ = (Math.random() - 0.5) * fixedParamsAmbient.distributionRange.z * 0.4; 
+
+            star.headPosition.set(startX, startY, startZ);
+
+            const targetX = -startX * (0.05 + Math.random() * 0.25); 
+            const targetY = -startY * (0.05 + Math.random() * 0.25);
+            const targetZ = startZ + (Math.random() - 0.5) * 50; 
+            const target = new THREE.Vector3(targetX, targetY, targetZ);
+
+            star.velocity.subVectors(target, star.headPosition).normalize();
+            const speed = shootingStarParams.baseSpeed + (Math.random() - 0.5) * shootingStarParams.speedVariation;
+            star.velocity.multiplyScalar(speed);
+
+            star.history = [];
+            for (let i = 0; i < shootingStarParams.trailSegments; i++) {
+                star.history.push(star.headPosition.clone()); 
+            }
+            activeShootingStarCountForDebug++;
+            console.log(`Shooting star ${star.id} spawned! Active count: ${activeShootingStarCountForDebug}. Pos: ${star.headPosition.x.toFixed(1)}, ${star.headPosition.y.toFixed(1)}, ${star.headPosition.z.toFixed(1)}`);
+        }
+
+        function updateShootingStars() {
+            const currentTime = Date.now();
+            if (currentTime - lastShootingStarSpawnTime > shootingStarParams.spawnInterval) {
+                if (Math.random() < shootingStarParams.spawnChance) {
+                    spawnShootingStar();
+                }
+                lastShootingStarSpawnTime = currentTime;
+            }
+
+            const positions = shootingStarGeometry.attributes.position.array;
+            const colors = shootingStarGeometry.attributes.color.array;
+            let needsPosUpdate = false;
+            let needsColorUpdate = false;
+
+            for (const star of shootingStarPool) {
+                if (!star.active) continue;
+
+                star.age++;
+                if (star.age > star.lifespan) {
+                    star.active = false;
+                    activeShootingStarCountForDebug--;
+                    console.log(`Shooting star ${star.id} expired. Active count: ${activeShootingStarCountForDebug}`);
+                    for (let i = 0; i < shootingStarParams.trailSegments; i++) {
+                        const pointBufferIndex = (star.baseBufferIndex + i) * 3;
+                        positions[pointBufferIndex] = Infinity;
+                        positions[pointBufferIndex + 1] = Infinity;
+                        positions[pointBufferIndex + 2] = Infinity;
+                    }
+                    needsPosUpdate = true;
+                    continue;
+                }
+
+                star.headPosition.add(star.velocity);
+
+                for (let i = shootingStarParams.trailSegments - 1; i > 0; i--) {
+                    star.history[i].copy(star.history[i - 1]);
+                }
+                if (star.history.length > 0) { // Should always be true if trailSegments > 0
+                   star.history[0].copy(star.headPosition);
+                }
+
+
+                const lifeRatio = star.age / star.lifespan;
+
+                for (let i = 0; i < shootingStarParams.trailSegments; i++) {
+                    const pointBufferIndex = (star.baseBufferIndex + i) * 3;
+                    const trailPointPos = star.history[i];
+                     if (!trailPointPos) continue; // Safety check
+
+                    positions[pointBufferIndex]     = trailPointPos.x;
+                    positions[pointBufferIndex + 1] = trailPointPos.y;
+                    positions[pointBufferIndex + 2] = trailPointPos.z;
+
+                    const trailSegmentFade = Math.pow(1.0 - (i / (Math.max(1, shootingStarParams.trailSegments -1) + 0.001) ), 2.0); 
+                    const lifetimeFade = Math.max(0, 1.0 - lifeRatio * lifeRatio); 
+                    
+                    const brightness = shootingStarParams.headBrightness * trailSegmentFade * lifetimeFade;
+
+                    colors[pointBufferIndex]     = shootingStarParams.color.r * brightness;
+                    colors[pointBufferIndex + 1] = shootingStarParams.color.g * brightness;
+                    colors[pointBufferIndex + 2] = shootingStarParams.color.b * brightness;
+                }
+                needsPosUpdate = true;
+                needsColorUpdate = true;
+                // if (star.id === 0 && star.age % 30 === 0) { // Log one star occasionally
+                //    console.log(`Star 0, Age: ${star.age}, Pos: ${star.headPosition.x.toFixed(1)}, ${star.headPosition.y.toFixed(1)}, Vel: ${star.velocity.x.toFixed(1)}`);
+                // }
+            }
+
+            if (needsPosUpdate) shootingStarGeometry.attributes.position.needsUpdate = true;
+            if (needsColorUpdate) shootingStarGeometry.attributes.color.needsUpdate = true;
+        }
+
+
         const tempParticlePosVec = new THREE.Vector3();
         const tempDirectionVec = new THREE.Vector3();
 
         function animateParticles() {
             requestAnimationFrame(animateParticles);
 
-            // Update the galaxy's own rotation angle
             galaxyRotationAngle += fixedParams.particleSpinSpeed;
             const cosSpinAngle = Math.cos(galaxyRotationAngle);
             const sinSpinAngle = Math.sin(galaxyRotationAngle);
 
             if (particleGeometry && particleGeometry.attributes.position && particleGeometry.userData.initialStaticPositions && particleGeometry.userData.basePositions) {
-                const positionsAttribute = particleGeometry.attributes.position; // Live positions being rendered
+                const positionsAttribute = particleGeometry.attributes.position;
                 const currentPositionsArray = positionsAttribute.array;
-                const targetBasePositionsArray = particleGeometry.userData.basePositions; // Target resting positions after spin
-                const initialStaticPositionsArray = particleGeometry.userData.initialStaticPositions; // Original unrotated positions
+                const targetBasePositionsArray = particleGeometry.userData.basePositions;
+                const initialStaticPositionsArray = particleGeometry.userData.initialStaticPositions;
                 const velocitiesArray = particleGeometry.userData.velocities;
                 const particleCountValue = Math.floor(fixedParams.particleCount);
 
-                // 1. Update the target 'basePositions' by rotating the 'initialStaticPositions'
                 for (let i = 0; i < particleCountValue; i++) {
-                    const ix = i * 3, iy = i * 3 + 1;
+                    const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
                     const staticX = initialStaticPositionsArray[ix];
                     const staticY = initialStaticPositionsArray[iy];
+                    const staticZ = initialStaticPositionsArray[iz];
 
                     targetBasePositionsArray[ix] = staticX * cosSpinAngle - staticY * sinSpinAngle;
                     targetBasePositionsArray[iy] = staticX * sinSpinAngle + staticY * cosSpinAngle;
-                    targetBasePositionsArray[i * 3 + 2] = 0; // Z is always 0 for base
+                    targetBasePositionsArray[iz] = staticZ;
                 }
 
-                // 2. Handle mouse/touch interaction to update mouse3D
                 if (fixedParams.mouseRepel && mouse.x !== Infinity && mouse.y !== Infinity) {
                     if (camera && particlesMesh) {
                         const vec = new THREE.Vector3(mouse.x, mouse.y, 0.5);
                         vec.unproject(camera);
                         const dir = vec.sub(camera.position).normalize();
-                        const distance = -camera.position.z / dir.z;
+                        const distance = -camera.position.z / dir.z; 
                         mouse3D.copy(camera.position).add(dir.multiplyScalar(distance));
-                        mouse3D.z = 0;
+                        mouse3D.z = 0; 
                     }
                 } else {
                     mouse3D.set(Infinity, Infinity, Infinity);
                 }
 
-                // 3. Apply physics (repel, spring-back to rotated base, velocity, damping) to 'currentPositionsArray'
                 for (let i = 0; i < particleCountValue; i++) {
                     const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
+                    tempParticlePosVec.set(currentPositionsArray[ix], currentPositionsArray[iy], 0); 
 
-                    tempParticlePosVec.set(currentPositionsArray[ix], currentPositionsArray[iy], 0); // Current live particle position
-
-                    // Apply mouse repel force to velocity
                     if (fixedParams.mouseRepel && fixedParams.repelStrength > 0 && mouse3D.x !== Infinity) {
                         const distSq = tempParticlePosVec.distanceToSquared(mouse3D);
-                        const repelRadiusFactor = 0.90; // Slightly smaller interaction radius might feel better
+                        const repelRadiusFactor = 0.90;
                         const repelRadiusSq = Math.pow(fixedParams.repelStrength * repelRadiusFactor, 2);
 
                         if (distSq < repelRadiusSq && distSq > 0.00001) {
                             const repelEffectiveness = fixedParams.repelStrength * repelRadiusFactor;
                             const forceFactor = 1 - Math.sqrt(distSq) / repelEffectiveness;
-                            tempDirectionVec.subVectors(tempParticlePosVec, mouse3D).normalize(); // Direction away from mouse
-                            tempDirectionVec.z = 0; // Ensure force is 2D
-                            tempDirectionVec.normalize();
+                            tempDirectionVec.subVectors(tempParticlePosVec, mouse3D).normalize(); 
+                            tempDirectionVec.z = 0; 
 
                             const displacementMagnitude = forceFactor * fixedParams.repelStrength * (isMobile ? 0.12 : 0.18);
                             velocitiesArray[ix] += tempDirectionVec.x * displacementMagnitude * 0.1;
@@ -331,25 +638,26 @@
                         }
                     }
 
-                    // Apply spring force towards the (now rotated) target base position
-                    const springForceFactor = 0.07; // Slightly softer spring
+                    const springForceFactor = 0.07;
                     velocitiesArray[ix] += (targetBasePositionsArray[ix] - currentPositionsArray[ix]) * springForceFactor;
                     velocitiesArray[iy] += (targetBasePositionsArray[iy] - currentPositionsArray[iy]) * springForceFactor;
+                    velocitiesArray[iz] += (targetBasePositionsArray[iz] - currentPositionsArray[iz]) * springForceFactor;
                     
-                    // Apply velocity to current position
                     currentPositionsArray[ix] += velocitiesArray[ix];
                     currentPositionsArray[iy] += velocitiesArray[iy];
+                    currentPositionsArray[iz] += velocitiesArray[iz];
                     
-                    // Dampen velocity (friction)
-                    velocitiesArray[ix] *= 0.88; // Stronger damping for quicker settling
-                    velocitiesArray[iy] *= 0.88;
-
-                    currentPositionsArray[iz] = 0; // Force Z to 0 for rendering
+                    const dampingFactor = 0.88;
+                    velocitiesArray[ix] *= dampingFactor;
+                    velocitiesArray[iy] *= dampingFactor;
+                    velocitiesArray[iz] *= dampingFactor; 
                 }
                 positionsAttribute.needsUpdate = true;
             }
 
-            if (controls) controls.update(); // Still allow manual camera control
+            updateShootingStars(); 
+
+            if (controls) controls.update();
             if (renderer && scene && camera) renderer.render(scene, camera);
         }
 
@@ -369,8 +677,6 @@
 
         function onTouchMoveParticles(event) {
             if (event.touches.length > 0) {
-                // Allow page scroll if not directly over canvas, or if you prefer default scroll:
-                // if (event.target === particleCanvasElement) { event.preventDefault(); }
                 const touch = event.touches[0];
                 mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = - (touch.clientY / window.innerHeight) * 2 + 1;
