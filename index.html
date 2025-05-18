@@ -17,18 +17,22 @@
             --glitch-color-1: #FF00FF;
             --glitch-color-2: #00FF00;
 
+            /* Pastel-Neon Red variables */
+            --pastel-neon-red: #FFAFAF;
+            --pastel-neon-red-rgb: 255, 175, 175;
+
             --font-header: 'Cinzel', serif;
             --font-quote: 'Dancing Script', cursive;
             --font-links-mentality: 'Orbitron', sans-serif;
             --font-footer: 'Share Tech Mono', monospace;
 
-            /* Added for Linktree content integration */
-            --linktree-red: #FF3B30;
+            /* Linktree specific variables */
+            --linktree-red: #FF3B30; /* Standard strong red for other elements if needed */
             --linktree-white: #FFFFFF;
-            --linktree-red-rgb: 255, 59, 48;
+            --linktree-red-rgb: 255, 59, 48; /* RGB for standard strong red */
             --linktree-card-bg: rgba(34, 34, 34, 0.85);
             --linktree-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-            --linktree-highlight-shadow: 0 8px 25px rgba(var(--linktree-red-rgb), 0.3);
+            /* --linktree-highlight-shadow is now effectively replaced by pastel version on hover */
             --linktree-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -82,11 +86,10 @@
         /* Styles for Integrated Linktree Profile Section */
         .linktree-profile-section {
             text-align: center;
-            margin-bottom: 40px; /* This margin might need adjustment if image is gone */
+            margin-bottom: 40px;
             font-family: var(--linktree-font);
         }
         .linktree-profile-section .linktree-profile-pic {
-            /* Previous styles for image, now hidden */
             width: 140px;
             height: 140px;
             border-radius: 50%;
@@ -95,7 +98,7 @@
             margin-bottom: 15px;
             box-shadow: none;
             transition: transform 0.3s ease;
-            display: none; /* HIDE THE PROFILE IMAGE */
+            display: none; /* Profile image is hidden */
         }
         .linktree-profile-section .linktree-profile-pic:hover {
             transform: scale(1.05);
@@ -103,31 +106,31 @@
         }
         .linktree-profile-section h1.linktree-name {
             font-size: 32px;
-            margin-bottom: 10px; /* Adjusted margin */
+            margin-bottom: 10px;
             font-weight: 700;
-            color: var(--neon-blue); /* NEON COLOR */
-            text-shadow: 0 0 6px rgba(var(--neon-blue-rgb), 0.9), 0 0 12px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
+            color: var(--pastel-neon-red);
+            text-shadow: 0 0 8px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 15px rgba(var(--pastel-neon-red-rgb), 0.5);
         }
         .linktree-profile-section .linktree-title {
-            color: var(--neon-blue); /* NEON COLOR */
             font-weight: bold;
-            margin-bottom: 8px; /* Adjusted margin */
+            margin-bottom: 8px;
             font-size: 22px;
-            text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.9), 0 0 10px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
+            color: var(--pastel-neon-red);
+            text-shadow: 0 0 7px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 12px rgba(var(--pastel-neon-red-rgb), 0.4);
         }
         .linktree-profile-section .linktree-contact {
-            color: var(--neon-blue); /* NEON COLOR */
             opacity: 1;
             font-size: 16px;
-            margin-bottom: 15px; /* Adjusted margin */
-            text-shadow: 0 0 4px rgba(var(--neon-blue-rgb), 0.9), 0 0 8px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
+            margin-bottom: 15px;
+            color: var(--pastel-neon-red);
+            text-shadow: 0 0 6px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 10px rgba(var(--pastel-neon-red-rgb), 0.4);
         }
         .linktree-profile-section .linktree-skills {
-            margin-top: 10px; /* Adjusted margin */
+            margin-top: 10px;
             font-size: 18px;
-            color: var(--neon-blue); /* NEON COLOR */
             font-weight: 600;
-            text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.9), 0 0 10px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
+            color: var(--pastel-neon-red);
+            text-shadow: 0 0 7px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 12px rgba(var(--pastel-neon-red-rgb), 0.4);
         }
         .linktree-profile-section .linktree-skills p { margin: 0; }
 
@@ -139,7 +142,7 @@
             gap: 18px;
             width: 100%;
             max-width: 580px;
-            margin: 0 auto;
+            margin: 20px auto 0;
             font-family: var(--linktree-font);
         }
         .linktree-link-item {
@@ -161,10 +164,10 @@
         }
         .linktree-link-item:hover {
             transform: translateY(-6px) scale(1.02);
-            box-shadow: var(--linktree-highlight-shadow);
-            background-color: var(--linktree-red);
-            color: var(--linktree-white);
-            border-color: var(--linktree-red);
+            box-shadow: 0 8px 25px rgba(var(--pastel-neon-red-rgb), 0.35); /* Pastel red shadow */
+            background-color: var(--pastel-neon-red); /* Pastel red background */
+            color: var(--linktree-white); /* Text remains white */
+            border-color: var(--pastel-neon-red); /* Pastel red border */
         }
         .linktree-link-item .link-icon {
             font-size: 28px;
@@ -174,23 +177,24 @@
             transition: color 0.3s ease;
         }
          .linktree-link-item:hover .link-icon {
-            color: var(--linktree-white);
+            color: var(--linktree-white); /* Icon remains white */
         }
         .linktree-link-item .link-text {
             flex: 1;
         }
         .linktree-link-item .linktree-badge {
             background-color: rgba(226, 232, 240, 0.8);
-            color: var(--linktree-red);
+            color: var(--linktree-red); /* Default badge text color (strong red) */
             padding: 3px 10px;
             border-radius: 12px;
             font-size: 11px;
             font-weight: 700;
             margin-left: 8px;
+            transition: color 0.3s ease, background-color 0.3s ease; /* Added transition */
         }
         .linktree-link-item:hover .linktree-badge {
-            background-color: var(--linktree-white);
-            color: var(--linktree-red);
+            background-color: var(--linktree-white); /* Badge background remains white */
+            color: var(--pastel-neon-red); /* Badge text color to pastel red on hover */
         }
 
         .title-mentality {
@@ -269,8 +273,6 @@
             .quote { font-size: 1rem; }
             .links-container#linktree-links-section { gap: 12px; }
 
-            /* Profile image is hidden, so no need to resize it here specifically unless it's made visible again */
-            /* .linktree-profile-section .linktree-profile-pic { width: 100px; height: 100px; } */
             .linktree-profile-section h1.linktree-name { font-size: 22px; }
             .linktree-profile-section .linktree-title { font-size: 18px; }
             .linktree-profile-section .linktree-skills { font-size: 15px; }
