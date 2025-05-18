@@ -3,691 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Syed Daniyal Haider Naqvi | AI/ML Enthusiast with Galaxy Visualizer</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Mentality | Syed Daniyal Haider Naqvi</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@500;700&family=Dancing+Script:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-color: #FF3B30;
-            --secondary-color: #50E3C2;
-            --highlight-color: #F5A623;
-            --highlight-color-rgb: 245, 166, 35;
-            --bg-color: #0c0c1d;
-            --text-color: #FFFFFF;
-            --card-bg: rgba(34, 34, 34, 0.85);
-            --shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-            --highlight-shadow: 0 8px 25px rgba(var(--highlight-color-rgb), 0.3);
-            --text-shadow-light: 0 1px 3px rgba(0,0,0,0.5);
+            --neon-blue: #00ccff;
+            --neon-blue-rgb: 0, 204, 255;
+            --dark-bg-for-glitch: #000000;
+            --text-color: #FFFFFF; /* Main text color, now used more broadly for visibility */
+            --text-color-muted: #AAAAAA;
+            --glitch-color-1: #FF00FF;
+            --glitch-color-2: #00FF00;
+
+            --font-header: 'Cinzel', serif;
+            --font-quote: 'Dancing Script', cursive;
+            --font-links-mentality: 'Orbitron', sans-serif; /* Renamed to avoid clash */
+            --font-footer: 'Share Tech Mono', monospace;
+
+            /* Added for Linktree content integration */
+            --linktree-red: #FF3B30;
+            --linktree-white: #FFFFFF; /* Specific white for Linktree, same as --text-color */
+            --linktree-red-rgb: 255, 59, 48;
+            --linktree-card-bg: rgba(34, 34, 34, 0.85);
+            --linktree-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            --linktree-highlight-shadow: 0 8px 25px rgba(var(--linktree-red-rgb), 0.3);
+            --linktree-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-links-mentality); /* Default font for Mentality page sections */
             color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
+            background-image: url('https://assets.onecompiler.app/43j5j5k35/43j5hyhh4/Mentality.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            line-height: 1.7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            background-color: transparent; /* Canvas will be background */
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
         }
-        #particleCanvas {
+
+        body::after { /* Scanlines */
+            content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
         }
-        #loadingIndicator {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: #fff; font-size: 1.2rem; background-color: rgba(0,0,0,0.7);
-            padding: 1rem 1.5rem; border-radius: 0.5rem; display: none; z-index: 30;
+
+        .main-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 680px; /* Slightly increased max-width for new content */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
-        .linktree-main-content {
-            position: relative; z-index: 10; width: 100%; display: flex; flex-direction: column;
-            align-items: center; padding: 20px; overflow-y: auto; max-height: 100vh;
+
+        /* Styles for Integrated Linktree Profile Section */
+        .linktree-profile-section {
+            text-align: center;
+            margin-bottom: 40px;
+            font-family: var(--linktree-font);
         }
-        .profile { text-align: center; margin-bottom: 40px; transition: transform 0.4s ease-in-out; }
-        .profile-pic {
-            width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
-            background-size: cover; background-position: center center;
-            border: 3px solid var(--highlight-color); margin-bottom: 15px;
-            transition: transform 0.6s ease-in-out, box-shadow 0.3s ease;
-            box-shadow: 0 0 15px rgba(var(--highlight-color-rgb), 0.5);
+        .linktree-profile-section .linktree-profile-pic {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            /* border: 3px solid var(--linktree-red); MODIFIED */
+            border: none; /* REMOVED BORDER */
+            margin-bottom: 15px;
+            /* box-shadow: 0 0 15px rgba(var(--linktree-red-rgb), 0.5); MODIFIED */
+            box-shadow: none; /* REMOVED SHADOW */
+            transition: transform 0.3s ease; /* Removed box-shadow from transition */
         }
-        .profile:hover .profile-pic { transform: rotate(360deg) scale(1.05); box-shadow: 0 0 25px rgba(var(--highlight-color-rgb), 0.8); }
-        .profile h1 { font-size: 36px; margin-bottom: 5px; font-weight: 700; text-shadow: var(--text-shadow-light); }
-        .profile .title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; font-size: 24px; text-shadow: var(--text-shadow-light); }
-        .profile .contact { color: #bbb; font-size: 16px; margin-bottom: 15px; text-shadow: var(--text-shadow-light); }
-        .profile .skills { margin-top: 20px; font-size: 19px; color: var(--highlight-color); font-weight: 600; text-shadow: var(--text-shadow-light); }
-        .links { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 580px; }
-        .link-item {
-            background-color: var(--card-bg); color: var(--text-color); padding: 18px 22px;
-            border-radius: 12px; text-decoration: none; display: flex; align-items: center;
-            gap: 22px; box-shadow: var(--shadow);
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
-            font-size: 18px; position: relative; border: 1px solid rgba(255,255,255,0.1);
+        .linktree-profile-section .linktree-profile-pic:hover {
+            transform: scale(1.05);
+            /* box-shadow: 0 0 25px rgba(var(--linktree-red-rgb), 0.8); MODIFIED */
+            box-shadow: none; /* REMOVED SHADOW ON HOVER */
         }
-        .link-item:hover {
-            transform: translateY(-6px) scale(1.02); box-shadow: var(--highlight-shadow);
-            background-color: var(--highlight-color); color: #111; border-color: var(--highlight-color);
+        .linktree-profile-section h1.linktree-name {
+            font-size: 32px; /* Adjusted size */
+            margin-bottom: 5px;
+            font-weight: 700;
+            color: var(--linktree-white); /* Already white, good */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5); /* Kept shadow for definition */
         }
-        .link-item:hover .link-icon { color: #111; }
-        .link-icon { font-size: 28px; transition: color 0.3s ease; width: 30px; text-align: center; }
-        .link-text { flex: 1; font-weight: bold; text-shadow: var(--text-shadow-light); }
-        .badge {
-            background-color: rgba(226, 232, 240, 0.8); color: var(--primary-color);
-            padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px;
+        .linktree-profile-section .linktree-title {
+            /* color: var(--linktree-red); MODIFIED */
+            color: var(--text-color); /* CHANGED to white for better contrast */
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 22px; /* Adjusted size */
+            /* text-shadow: 0 1px 3px rgba(0,0,0,0.3); MODIFIED */
+            text-shadow: none; /* REMOVED shadow for cleaner white text */
         }
-        .link-item:hover .badge { background-color: var(--bg-color); color: var(--text-color); }
-        footer { margin-top: 50px; padding-bottom: 20px; text-align: center; color: #aaa; font-size: 13px; text-shadow: var(--text-shadow-light); }
-        footer i { color: var(--primary-color); margin: 0 3px; }
+        .linktree-profile-section .linktree-contact {
+            /* color: var(--linktree-white); opacity: 0.85; MODIFIED */
+            color: var(--text-color); /* Explicitly white */
+            opacity: 1; /* Make fully opaque */
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .linktree-profile-section .linktree-skills {
+            margin-top: 20px;
+            font-size: 18px; /* Adjusted size */
+            /* color: var(--linktree-red); MODIFIED */
+            color: var(--text-color); /* CHANGED to white */
+            font-weight: 600;
+        }
+        .linktree-profile-section .linktree-skills p { margin: 0; }
+
+
+        /* Styles for Integrated Linktree Links Section */
+        .links-container#linktree-links-section { /* Keeping original ID for clarity if preferred */
+            display: flex;
+            flex-direction: column;
+            gap: 18px; /* Original Linktree gap */
+            width: 100%;
+            max-width: 580px; /* Max width for these links */
+            margin: 0 auto; /* Center the links container */
+            font-family: var(--linktree-font);
+        }
+        .linktree-link-item {
+            background-color: var(--linktree-card-bg);
+            color: var(--linktree-white);
+            padding: 18px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            box-shadow: var(--linktree-shadow);
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            font-size: 18px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-weight: bold;
+            text-align: left;
+        }
+        .linktree-link-item:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: var(--linktree-highlight-shadow);
+            background-color: var(--linktree-red);
+            color: var(--linktree-white);
+            border-color: var(--linktree-red);
+        }
+        .linktree-link-item .link-icon {
+            font-size: 28px;
+            width: 30px;
+            text-align: center;
+            color: var(--linktree-white);
+            transition: color 0.3s ease;
+        }
+         .linktree-link-item:hover .link-icon {
+            color: var(--linktree-white);
+        }
+        .linktree-link-item .link-text {
+            flex: 1;
+        }
+        .linktree-link-item .linktree-badge {
+            background-color: rgba(226, 232, 240, 0.8);
+            color: var(--linktree-red);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+        .linktree-link-item:hover .linktree-badge {
+            background-color: var(--linktree-white);
+            color: var(--linktree-red);
+        }
+
+        /* Mentality Page Original Header (if any other part was to be kept - removed for this integration) */
+        /* .header-section { margin-bottom: 40px; } ... */
+
+        /* Mentality Page Glitch and Title (Removed, but keeping CSS if other elements use it) */
+        .title-mentality {
+            font-family: var(--font-header); font-size: 4rem; font-weight: 700; color: var(--text-color);
+            text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue);
+            margin-bottom: 10px; position: relative; letter-spacing: 2px;
+        }
+        .glitch { position: relative; animation: glitch-skew 1s infinite linear alternate-reverse; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: transparent;
+        }
+        .glitch::before {
+            left: 2px; text-shadow: -2px 0 var(--glitch-color-1); clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px; text-shadow: -2px 0 var(--glitch-color-2), 2px 2px var(--neon-blue); clip: rect(85px, 450px, 140px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim { /* ...keyframes ... */ 0% { clip: rect(46px, 9999px, 99px, 0); transform: skew(0.3deg); } 5% { clip: rect(7px, 9999px, 90px, 0); transform: skew(0.82deg); } 10% { clip: rect(72px, 9999px, 8px, 0); transform: skew(0.42deg); } 15% { clip: rect(82px, 9999px, 72px, 0); transform: skew(0.22deg); } 20% { clip: rect(24px, 9999px, 58px, 0); transform: skew(0.76deg); } 25% { clip: rect(2px, 9999px, 59px, 0); transform: skew(0.39deg); } 30% { clip: rect(4px, 9999px, 96px, 0); transform: skew(0.86deg); } 35% { clip: rect(23px, 9999px, 87px, 0); transform: skew(0.73deg); } 40% { clip: rect(16px, 9999px, 8px, 0); transform: skew(0.32deg); } 45% { clip: rect(30px, 9999px, 12px, 0); transform: skew(0.79deg); } 50% { clip: rect(87px, 9999px, 42px, 0); transform: skew(0.47deg); } 55% { clip: rect(3px, 9999px, 93px, 0); transform: skew(0.57deg); } 60% { clip: rect(49px, 9999px, 98px, 0); transform: skew(0.16deg); } 65% { clip: rect(3px, 9999px, 26px, 0); transform: skew(0.19deg); } 70% { clip: rect(48px, 9999px, 65px, 0); transform: skew(0.46deg); } 75% { clip: rect(20px, 9999px, 82px, 0); transform: skew(0.41deg); } 80% { clip: rect(48px, 9999px, 37px, 0); transform: skew(0.78deg); } 85% { clip: rect(7px, 9999px, 48px, 0); transform: skew(0.73deg); } 90% { clip: rect(12px, 9999px, 75px, 0); transform: skew(0.28deg); } 95% { clip: rect(39px, 9999px, 29px, 0); transform: skew(0.71deg); } 100% { clip: rect(85px, 9999px, 14px, 0); transform: skew(0.7deg); } }
+        @keyframes glitch-anim-2 { /* ...keyframes ... */ 0% { clip: rect(80px, 9999px, 10px, 0); transform: skew(0.2deg); } 5% { clip: rect(8px, 9999px, 7px, 0); transform: skew(0.47deg); } 10% { clip: rect(2px, 9999px, 69px, 0); transform: skew(0.67deg); } 15% { clip: rect(44px, 9999px, 2px, 0); transform: skew(0.21deg); } 20% { clip: rect(40px, 9999px, 45px, 0); transform: skew(0.32deg); } 25% { clip: rect(12px, 9999px, 8px, 0); transform: skew(0.3deg); } 30% { clip: rect(1px, 9999px, 59px, 0); transform: skew(0.47deg); } 35% { clip: rect(29px, 9999px, 9px, 0); transform: skew(0.18deg); } 40% { clip: rect(43px, 9999px, 74px, 0); transform: skew(0.19deg); } 45% { clip: rect(88px, 9999px, 92px, 0); transform: skew(0.43deg); } 50% { clip: rect(10px, 9999px, 72px, 0); transform: skew(0.22deg); } 55% { clip: rect(66px, 9999px, 98px, 0); transform: skew(0.63deg); } 60% { clip: rect(8px, 9999px, 23px, 0); transform: skew(0.34deg); } 65% { clip: rect(1px, 9999px, 48px, 0); transform: skew(0.52deg); } 70% { clip: rect(82px, 9999px, 51px, 0); transform: skew(0.78deg); } 75% { clip: rect(45px, 9999px, 54px, 0); transform: skew(0.22deg); } 80% { clip: rect(2px, 9999px, 76px, 0); transform: skew(0.19deg); } 85% { clip: rect(58px, 9999px, 9px, 0); transform: skew(0.84deg); } 90% { clip: rect(1px, 9999px, 27px, 0); transform: skew(0.74deg); } 95% { clip: rect(59px, 9999px, 20px, 0); transform: skew(0.15deg); } 100% { clip: rect(10px, 9999px, 105px, 0); transform: skew(0.5deg); } }
+        @keyframes glitch-skew { /* ...keyframes ... */ 0% { transform: skew(0deg); } 10% { transform: skew(0.2deg); } 20% { transform: skew(-0.1deg); } 80% { transform: skew(0.1deg); } 90% { transform: skew(-0.2deg); } 100% { transform: skew(0deg); } }
+
+        /* Mentality Page Original Quote Styling (if needed for other elements) */
+        .quote { /* This class was used for the Mentality header quote */
+            font-family: var(--font-quote); font-size: 1.5rem; color: var(--text-color-muted);
+            margin-bottom: 30px; letter-spacing: 1px; text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.5);
+        }
+
+        /* Mentality Page Original Link Button Styling (kept for reference or if other buttons use this style) */
+        .link-button {
+            background-color: rgba(0,0,0,0.3); color: var(--neon-blue); border: 2px solid var(--neon-blue);
+            padding: 15px 20px; text-decoration: none; display: flex; align-items: center; justify-content: center;
+            gap: 10px; font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; position: relative;
+            transition: all 0.3s ease; box-shadow: 0 0 5px var(--neon-blue), inset 0 0 5px var(--neon-blue);
+            overflow: hidden; backdrop-filter: blur(3px); font-family: var(--font-links-mentality);
+        }
+        .link-button:hover {
+            background-color: var(--neon-blue); color: #000000;
+            box-shadow: 0 0 15px var(--neon-blue), 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            transform: translateY(-3px) scale(1.02);
+        }
+        .link-button .link-icon { font-size: 1.3rem; } /* Different from .linktree-link-item .link-icon */
+        .link-button .link-text { flex-grow: 1; text-align: center; }
+
+
+        .footer-section {
+            margin-top: 50px; padding-bottom: 20px; text-align: center;
+            /* color: var(--text-color-muted); MODIFIED */
+            color: var(--text-color); /* CHANGED to white for better visibility */
+            font-size: 0.9rem; font-family: var(--font-footer);
+        }
+        .footer-section .footer-quote {
+            margin-bottom: 15px;
+            font-style: italic;
+            /* Inherits color from .footer-section (now --text-color) */
+        }
+        .footer-icons { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 1.2rem; margin-bottom: 10px; }
+        .footer-icons .barcode {
+            font-family: monospace;
+            font-size: 1rem;
+            letter-spacing: -1px;
+            /* Inherits color from .footer-section (now --text-color) */
+        }
+
         @media screen and (max-width: 768px) {
-            .profile h1 { font-size: 28px; } .profile .title { font-size: 20px; } .profile .skills { font-size: 17px; }
-            .links { gap: 15px; max-width: 90%; }
-            .link-item { font-size: 16px; padding: 15px 20px; gap: 15px; } .link-icon { font-size: 24px; }
+            .title-mentality { font-size: 3rem; } /* Original Mentality title */
+            .quote { font-size: 1.2rem; } /* Original Mentality quote */
+            .link-button { padding: 12px 15px; font-size: 1rem; } /* Original Mentality buttons */
+
+            .linktree-profile-section h1.linktree-name { font-size: 28px; }
+            .linktree-profile-section .linktree-title { font-size: 20px; }
+            .linktree-profile-section .linktree-skills { font-size: 17px; }
+            .linktree-link-item { font-size: 16px; padding: 15px 20px; gap: 15px; }
+            .linktree-link-item .link-icon { font-size: 24px; }
         }
         @media screen and (max-width: 480px) {
-            body { padding: 10px; } .linktree-main-content { padding: 10px; }
-            .profile-pic { width: 100px; height: 100px; }
-            .profile h1 { font-size: 22px; } .profile .title { font-size: 18px; } .profile .skills { font-size: 15px; }
-            .links { gap: 12px; }
-            .link-item { font-size: 14px; padding: 12px 15px; } .link-icon { font-size: 20px; }
+            .main-container { max-width: 95%; }
+            .title-mentality { font-size: 2.2rem; } /* Original Mentality title */
+            .quote { font-size: 1rem; } /* Original Mentality quote */
+            .links-container#linktree-links-section { gap: 12px; } /* Linktree links */
+
+            .linktree-profile-section .linktree-profile-pic { width: 100px; height: 100px; }
+            .linktree-profile-section h1.linktree-name { font-size: 22px; }
+            .linktree-profile-section .linktree-title { font-size: 18px; }
+            .linktree-profile-section .linktree-skills { font-size: 15px; }
+            .linktree-link-item { font-size: 14px; padding: 12px 15px; }
+            .linktree-link-item .link-icon { font-size: 20px; }
         }
     </style>
 </head>
 <body>
-    <canvas id="particleCanvas"></canvas>
-    <div id="loadingIndicator">Generating cosmic wonders...</div>
+    <div class="main-container">
+        <div class="linktree-profile-section">
+            <img src="https://media.licdn.com/dms/image/D4D03AQH1X2Xn9n-YCA/profile-displayphoto-shrink_400_400/0/1708024768037?e=1721260800&v=beta&t=11_vY4n0AfvM10jXJ3vK6VTk5z75p_x_o8rtNuq_CMk" alt="Syed Daniyal Haider Naqvi" class="linktree-profile-pic">
+            <h1 class="linktree-name">Syed Daniyal Haider Naqvi</h1>
+            <div class="linktree-title">AI/ML Enthusiast | Developer</div>
+            <div class="linktree-contact">naqvidaniya598@gmail.com</div>
+            <div class="linktree-skills"><p>AI/ML | Deep Learning | Python | CV</p></div>
+        </div>
 
-    <div class="linktree-main-content">
-        <div class="profile">
-            <div class="profile-pic" style="background-image: url('https://media.licdn.com/dms/image/D4D03AQH1X2Xn9n-YCA/profile-displayphoto-shrink_400_400/0/1708024768037?e=1721260800&v=beta&t=11_vY4n0AfvM10jXJ3vK6VTk5z75p_x_o8rtNuq_CMk');"></div>
-            <h1>Syed Daniyal Haider Naqvi</h1>
-            <div class="title">AI/ML Enthusiast | Developer</div>
-            <div class="contact">naqvidaniya598@gmail.com</div>
-            <div class="skills"><p>AI/ML | Deep Learning | Python | CV</p></div>
-        </div>
-        <div class="links">
-            <a href="https://www.linkedin.com/in/syeddaniyalnaqvi/" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fab fa-linkedin-in"></i></div> <div class="link-text">LinkedIn Profile</div>
+        <div class="links-container" id="linktree-links-section">
+            <a href="https://www.linkedin.com/in/syeddaniyalnaqvi/" class="linktree-link-item" target="_blank">
+                <span class="link-icon"><i class="fab fa-linkedin-in"></i></span> <span class="link-text">LinkedIn Profile</span>
             </a>
-            <a href="https://github.com/DaniyalSE" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fab fa-github"></i></div> <div class="link-text">GitHub Profile</div>
+            <a href="https://github.com/DaniyalSE" class="linktree-link-item" target="_blank">
+                <span class="link-icon"><i class="fab fa-github"></i></span> <span class="link-text">GitHub Profile</span>
             </a>
-            <a href="https://drive.google.com/file/d/1VM9R6AureqCIAF5p3Hmr04GWhYPrdzXz/view?usp=sharing" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fas fa-file-pdf"></i></div> <div class="link-text">View Resume</div> <div class="badge">PDF</div>
+            <a href="https://drive.google.com/file/d/1VM9R6AureqCIAF5p3Hmr04GWhYPrdzXz/view?usp=sharing" class="linktree-link-item" target="_blank">
+                <span class="link-icon"><i class="fas fa-file-pdf"></i></span> <span class="link-text">View Resume</span> <span class="linktree-badge">PDF</span>
             </a>
-            <a href="mailto:naqvidaniya598@gmail.com" class="link-item" target="_blank">
-                <div class="link-icon"><i class="fas fa-envelope"></i></div> <div class="link-text">Contact Me</div>
+            <a href="mailto:naqvidaniya598@gmail.com" class="linktree-link-item" target="_blank">
+                <span class="link-icon"><i class="fas fa-envelope"></i></span> <span class="link-text">Contact Me</span>
             </a>
         </div>
-        <footer><p>© <span id="currentYear"></span> Syed Daniyal Haider Naqvi.</p></footer>
+
+        <footer class="footer-section">
+            <div class="footer-icons">
+                <span class="barcode">[█║▌│█│║▌║││█║▌│║▌║]</span>
+                <i class="fas fa-recycle"></i>
+            </div>
+            <p class="footer-quote">“Your deeds are like your monuments. Built with memories instead of with stone.”</p>
+            <p>&copy; <span id="currentYear"></span> Syed Daniyal Haider Naqvi. All rights reserved (or chosen license).</p> </footer>
     </div>
 
     <script>
-        let scene, camera, renderer, controls;
-        let particlesMesh, particleMaterial, particleGeometry;
-        let ambientStarsMesh; 
-        let galaxyRotationAngle = 0;
-
-        // NEW: Deep space stars
-        let deepSpaceStarsMesh;
-
-        const mouse = new THREE.Vector2(Infinity, Infinity);
-        const raycaster = new THREE.Raycaster();
-        let mouse3D = new THREE.Vector3();
-
-        const galaxyColors = [
-            new THREE.Color("#4A55A2"), new THREE.Color("#5B80E5"), new THREE.Color("#7469B6"),
-            new THREE.Color("#483D8B"), new THREE.Color("#6A0DAD"), new THREE.Color("#C070F0"),
-            new THREE.Color("#FF69B4"), new THREE.Color("#D85070"), new THREE.Color("#FFFFFF"),
-            new THREE.Color("#F8F0E3"), new THREE.Color("#FFFACD"), new THREE.Color("#F5E8DD"),
-            new THREE.Color("#F5A623"), new THREE.Color("#FFD700"), new THREE.Color("#FFA500"),
-            new THREE.Color("#ADD8E6"), new THREE.Color("#B0E0E6"),
-        ];
-
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (window.innerWidth <= 768);
-
-        const fixedParams = {
-            shape: 'galaxy',
-            particleCount: isMobile ? 18000 : 45000, 
-            particleSize: isMobile ? 0.07 : 0.09,
-            particleOpacity: 0.65,
-            mouseRepel: true,
-            repelStrength: isMobile ? 22 : 35,
-            backgroundColor: '#0c0c1d',
-            particleSpinSpeed: 0.0015,
-        };
-
-        const fixedParamsAmbient = {
-            count: isMobile ? 1200 : 3500, // Slightly increased
-            size: isMobile ? 0.05 : 0.07,
-            opacity: 0.35,
-            baseColor: new THREE.Color("#FFFFFF"),
-            distributionRange: { // Slightly increased range
-                x: isMobile ? 400 : 700,
-                y: isMobile ? 400 : 700,
-                z: isMobile ? 350 : 600
-            }
-        };
-
-        // NEW: Parameters for Deep Space Stars
-        const fixedParamsDeepSpaceStars = {
-            count: isMobile ? 700 : 2000,
-            size: isMobile ? 0.03 : 0.04, // Smaller
-            opacity: 0.20, // Dimmer
-            baseColor: new THREE.Color("#B0C4DE"), // LightSteelBlue - dimmer, slightly bluer white
-            distributionRange: { // Much larger range
-                x: isMobile ? 900 : 1600,
-                y: isMobile ? 900 : 1600,
-                z: isMobile ? 800 : 1300
-            }
-        };
-
-
-        const particleLoadingIndicator = document.getElementById('loadingIndicator');
-        const particleCanvasElement = document.getElementById('particleCanvas');
-
-        let shootingStarMesh, shootingStarMaterial, shootingStarGeometry;
-        let shootingStarPool = [];
-        let lastShootingStarSpawnTime = 0;
-        let activeShootingStarCountForDebug = 0; // For console logging
-
-        // MODIFIED: Shooting Star parameters for better visibility (tune later)
-        const shootingStarParams = {
-            maxPoolCount: isMobile ? 4 : 6,      
-            spawnInterval: isMobile ? 1200 : 800, // More frequent for testing
-            spawnChance: 0.75,                   // Higher chance for testing
-            baseSpeed: isMobile ? 1.8 : 3.5,     // Adjusted speed
-            speedVariation: 0.7,
-            lifespan: isMobile ? 100 : 160,      // Longer lifespan for testing
-            headSize: isMobile ? 0.45 : 0.65,    // Larger head for testing
-            color: new THREE.Color("#FFFFFF"),    
-            headBrightness: 1.0,                 // Max brightness
-            trailSegments: isMobile ? 5 : 7,      
-        };
-
-
-        function initParticles() {
-            particleLoadingIndicator.style.display = 'block'; 
-
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(fixedParams.backgroundColor);
-
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000); // Increased far plane for deep space stars
-            camera.position.z = isMobile ? 110 : 160;
-
-            renderer = new THREE.WebGLRenderer({ canvas: particleCanvasElement, antialias: !isMobile });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.5) : window.devicePixelRatio);
-
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.minDistance = 10;
-            controls.maxDistance = isMobile ? 280 : 500; 
-            controls.enablePan = false;
-            controls.enableZoom = true;
-            controls.autoRotate = false;
-
-            regenerateParticles();      
-            regenerateAmbientStars();   
-            regenerateDeepSpaceStars(); // NEW: Generate deep space stars
-            initShootingStars();        
-
-            window.addEventListener('resize', onWindowResizeParticles, false);
-            document.addEventListener('mousemove', onMouseMoveParticles, false);
-            document.addEventListener('touchmove', onTouchMoveParticles, { passive: false });
-            document.addEventListener('touchstart', onTouchMoveParticles, { passive: false });
-
-            console.log("Scene initialized. Look for shooting star spawn messages in console.");
-            animateParticles();
-            
-            setTimeout(() => {
-                particleLoadingIndicator.style.display = 'none';
-            }, 1500); 
-        }
-
-        function regenerateParticles() {
-            setTimeout(() => {
-                if (particlesMesh) {
-                    scene.remove(particlesMesh);
-                    if (particleGeometry) particleGeometry.dispose();
-                    if (particleMaterial) particleMaterial.dispose();
-                }
-
-                const numParticles = Math.floor(fixedParams.particleCount);
-                const initialStaticPositions = new Float32Array(numParticles * 3);
-                const colors = new Float32Array(numParticles * 3);
-                
-                const shapeScale = isMobile ? 50 : 70;
-                const coreRadiusRatio = isMobile ? 0.07 : 0.09;
-                const coreRadius = shapeScale * coreRadiusRatio;
-                const depthSpread = isMobile ? 8 : 15;
-
-                createGalaxyPositions3D(
-                    numParticles, isMobile ? 3 : 4, 0.45, 0.12, coreRadius,
-                    isMobile ? 80 : 120, depthSpread, initialStaticPositions, colors
-                );
-
-                particleGeometry = new THREE.BufferGeometry();
-                particleGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(initialStaticPositions), 3));
-                particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-                particleGeometry.userData.initialStaticPositions = initialStaticPositions;
-                particleGeometry.userData.basePositions = new Float32Array(initialStaticPositions);
-                particleGeometry.userData.velocities = new Float32Array(numParticles * 3).fill(0);
-
-                particleMaterial = new THREE.PointsMaterial({
-                    size: parseFloat(fixedParams.particleSize),
-                    opacity: parseFloat(fixedParams.particleOpacity),
-                    transparent: true, sizeAttenuation: true, depthWrite: false,
-                    blending: THREE.AdditiveBlending, vertexColors: true
-                });
-
-                particlesMesh = new THREE.Points(particleGeometry, particleMaterial);
-                scene.add(particlesMesh);
-            }, 50);
-        }
-        
-        function createGalaxyPositions3D(count, numArms, armSpread, rotationFactor, coreRadius, maxDistFromCenter, depthSpread, positionsArray, colorsArray) {
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * 2 * Math.PI;
-                const distFromCenter = coreRadius + Math.pow(Math.random(), 0.9) * (maxDistFromCenter - coreRadius);
-                const armIndex = Math.floor(Math.random() * numArms);
-                const armOffsetAngle = (armIndex / numArms) * 2 * Math.PI;
-                const spiralAngle = distFromCenter * rotationFactor;
-                const totalAngle = angle * armSpread + armOffsetAngle + spiralAngle;
-
-                positionsArray[i * 3]     = Math.cos(totalAngle) * distFromCenter;
-                positionsArray[i * 3 + 1] = Math.sin(totalAngle) * distFromCenter;
-                positionsArray[i * 3 + 2] = (Math.random() - 0.5) * depthSpread * (distFromCenter / maxDistFromCenter);
-
-                const color = galaxyColors[Math.floor(Math.random() * galaxyColors.length)];
-                colorsArray[i * 3]     = color.r;
-                colorsArray[i * 3 + 1] = color.g;
-                colorsArray[i * 3 + 2] = color.b;
-            }
-        }
-
-        function regenerateAmbientStars() {
-             if (ambientStarsMesh) {
-                scene.remove(ambientStarsMesh);
-                if (ambientStarsMesh.geometry) ambientStarsMesh.geometry.dispose();
-                if (ambientStarsMesh.material) ambientStarsMesh.material.dispose();
-            }
-
-            const numParticles = Math.floor(fixedParamsAmbient.count);
-            const positions = new Float32Array(numParticles * 3);
-            const colors = new Float32Array(numParticles * 3);
-
-            const rangeX = fixedParamsAmbient.distributionRange.x;
-            const rangeY = fixedParamsAmbient.distributionRange.y;
-            const rangeZ = fixedParamsAmbient.distributionRange.z;
-            const baseColor = fixedParamsAmbient.baseColor;
-
-            for (let i = 0; i < numParticles; i++) {
-                positions[i * 3]     = (Math.random() - 0.5) * 2 * rangeX;
-                positions[i * 3 + 1] = (Math.random() - 0.5) * 2 * rangeY;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 2 * rangeZ;
-
-                const variation = Math.random() * 0.4 + 0.6;
-                colors[i * 3]     = baseColor.r * variation;
-                colors[i * 3 + 1] = baseColor.g * variation;
-                colors[i * 3 + 2] = baseColor.b * variation;
-            }
-
-            const ambientGeometry = new THREE.BufferGeometry();
-            ambientGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            ambientGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            const ambientMaterial = new THREE.PointsMaterial({
-                size: parseFloat(fixedParamsAmbient.size),
-                opacity: parseFloat(fixedParamsAmbient.opacity),
-                transparent: true,
-                sizeAttenuation: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending,
-                vertexColors: true
-            });
-
-            ambientStarsMesh = new THREE.Points(ambientGeometry, ambientMaterial);
-            scene.add(ambientStarsMesh);
-        }
-
-        // NEW: Function to generate deep space stars
-        function regenerateDeepSpaceStars() {
-            if (deepSpaceStarsMesh) {
-                scene.remove(deepSpaceStarsMesh);
-                if (deepSpaceStarsMesh.geometry) deepSpaceStarsMesh.geometry.dispose();
-                if (deepSpaceStarsMesh.material) deepSpaceStarsMesh.material.dispose();
-            }
-
-            const numParticles = Math.floor(fixedParamsDeepSpaceStars.count);
-            const positions = new Float32Array(numParticles * 3);
-            const colors = new Float32Array(numParticles * 3); // Will use for slight color variation
-
-            const rangeX = fixedParamsDeepSpaceStars.distributionRange.x;
-            const rangeY = fixedParamsDeepSpaceStars.distributionRange.y;
-            const rangeZ = fixedParamsDeepSpaceStars.distributionRange.z;
-            const baseColor = fixedParamsDeepSpaceStars.baseColor;
-
-            for (let i = 0; i < numParticles; i++) {
-                positions[i * 3]     = (Math.random() - 0.5) * 2 * rangeX;
-                positions[i * 3 + 1] = (Math.random() - 0.5) * 2 * rangeY;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 2 * rangeZ; // Spread them in Z too
-
-                const variation = Math.random() * 0.3 + 0.7; // 0.7 to 1.0 brightness
-                colors[i * 3]     = baseColor.r * variation;
-                colors[i * 3 + 1] = baseColor.g * variation;
-                colors[i * 3 + 2] = baseColor.b * variation;
-            }
-
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            const material = new THREE.PointsMaterial({
-                size: parseFloat(fixedParamsDeepSpaceStars.size),
-                opacity: parseFloat(fixedParamsDeepSpaceStars.opacity),
-                transparent: true,
-                sizeAttenuation: true,
-                depthWrite: false,
-                blending: THREE.AdditiveBlending, 
-                vertexColors: true
-            });
-
-            deepSpaceStarsMesh = new THREE.Points(geometry, material);
-            scene.add(deepSpaceStarsMesh);
-        }
-
-
-        function initShootingStars() {
-            const numTotalPoints = shootingStarParams.maxPoolCount * shootingStarParams.trailSegments;
-            shootingStarGeometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(numTotalPoints * 3);
-            const colors = new Float32Array(numTotalPoints * 3); 
-
-            for(let i=0; i < numTotalPoints * 3; i++) {
-                positions[i] = Infinity; // Initialize off-screen
-            }
-
-            shootingStarGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            shootingStarGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            shootingStarMaterial = new THREE.PointsMaterial({
-                size: shootingStarParams.headSize,
-                transparent: true,
-                opacity: 1.0, 
-                blending: THREE.AdditiveBlending,
-                sizeAttenuation: true,
-                depthWrite: false,
-                vertexColors: true
-            });
-
-            shootingStarMesh = new THREE.Points(shootingStarGeometry, shootingStarMaterial);
-            scene.add(shootingStarMesh);
-
-            for (let i = 0; i < shootingStarParams.maxPoolCount; i++) {
-                shootingStarPool.push({
-                    active: false,
-                    headPosition: new THREE.Vector3(),
-                    velocity: new THREE.Vector3(),
-                    age: 0,
-                    lifespan: 0,
-                    history: [], 
-                    baseBufferIndex: i * shootingStarParams.trailSegments,
-                    id: i // For debugging
-                });
-            }
-        }
-
-        function spawnShootingStar() {
-            let star = null;
-            let starIndex = -1;
-            for (let i = 0; i < shootingStarPool.length; i++) {
-                if (!shootingStarPool[i].active) {
-                    star = shootingStarPool[i];
-                    starIndex = i;
-                    break;
-                }
-            }
-            if (!star) return; 
-
-            star.active = true;
-            star.age = 0;
-            star.lifespan = shootingStarParams.lifespan * (1 + (Math.random() - 0.5) * 0.4); 
-
-            const spawnDist = Math.max(fixedParamsAmbient.distributionRange.x, fixedParamsAmbient.distributionRange.y) * 1.4 + 80; // Spawn further out
-            const angle = Math.random() * Math.PI * 2;
-            const side = Math.random() < 0.5 ? 1 : -1;
-
-            let startX, startY;
-            if (Math.random() < 0.5) { 
-                startX = spawnDist * side;
-                startY = (Math.random() - 0.5) * spawnDist * 1.3; 
-            } else { 
-                startX = (Math.random() - 0.5) * spawnDist * 1.3; 
-                startY = spawnDist * side;
-            }
-            // Ensure Z is not too far, but allow some variation
-            const startZ = (Math.random() - 0.5) * fixedParamsAmbient.distributionRange.z * 0.4; 
-
-            star.headPosition.set(startX, startY, startZ);
-
-            const targetX = -startX * (0.05 + Math.random() * 0.25); 
-            const targetY = -startY * (0.05 + Math.random() * 0.25);
-            const targetZ = startZ + (Math.random() - 0.5) * 50; 
-            const target = new THREE.Vector3(targetX, targetY, targetZ);
-
-            star.velocity.subVectors(target, star.headPosition).normalize();
-            const speed = shootingStarParams.baseSpeed + (Math.random() - 0.5) * shootingStarParams.speedVariation;
-            star.velocity.multiplyScalar(speed);
-
-            star.history = [];
-            for (let i = 0; i < shootingStarParams.trailSegments; i++) {
-                star.history.push(star.headPosition.clone()); 
-            }
-            activeShootingStarCountForDebug++;
-            console.log(`Shooting star ${star.id} spawned! Active count: ${activeShootingStarCountForDebug}. Pos: ${star.headPosition.x.toFixed(1)}, ${star.headPosition.y.toFixed(1)}, ${star.headPosition.z.toFixed(1)}`);
-        }
-
-        function updateShootingStars() {
-            const currentTime = Date.now();
-            if (currentTime - lastShootingStarSpawnTime > shootingStarParams.spawnInterval) {
-                if (Math.random() < shootingStarParams.spawnChance) {
-                    spawnShootingStar();
-                }
-                lastShootingStarSpawnTime = currentTime;
-            }
-
-            const positions = shootingStarGeometry.attributes.position.array;
-            const colors = shootingStarGeometry.attributes.color.array;
-            let needsPosUpdate = false;
-            let needsColorUpdate = false;
-
-            for (const star of shootingStarPool) {
-                if (!star.active) continue;
-
-                star.age++;
-                if (star.age > star.lifespan) {
-                    star.active = false;
-                    activeShootingStarCountForDebug--;
-                    console.log(`Shooting star ${star.id} expired. Active count: ${activeShootingStarCountForDebug}`);
-                    for (let i = 0; i < shootingStarParams.trailSegments; i++) {
-                        const pointBufferIndex = (star.baseBufferIndex + i) * 3;
-                        positions[pointBufferIndex] = Infinity;
-                        positions[pointBufferIndex + 1] = Infinity;
-                        positions[pointBufferIndex + 2] = Infinity;
-                    }
-                    needsPosUpdate = true;
-                    continue;
-                }
-
-                star.headPosition.add(star.velocity);
-
-                for (let i = shootingStarParams.trailSegments - 1; i > 0; i--) {
-                    star.history[i].copy(star.history[i - 1]);
-                }
-                if (star.history.length > 0) { // Should always be true if trailSegments > 0
-                   star.history[0].copy(star.headPosition);
-                }
-
-
-                const lifeRatio = star.age / star.lifespan;
-
-                for (let i = 0; i < shootingStarParams.trailSegments; i++) {
-                    const pointBufferIndex = (star.baseBufferIndex + i) * 3;
-                    const trailPointPos = star.history[i];
-                     if (!trailPointPos) continue; // Safety check
-
-                    positions[pointBufferIndex]     = trailPointPos.x;
-                    positions[pointBufferIndex + 1] = trailPointPos.y;
-                    positions[pointBufferIndex + 2] = trailPointPos.z;
-
-                    const trailSegmentFade = Math.pow(1.0 - (i / (Math.max(1, shootingStarParams.trailSegments -1) + 0.001) ), 2.0); 
-                    const lifetimeFade = Math.max(0, 1.0 - lifeRatio * lifeRatio); 
-                    
-                    const brightness = shootingStarParams.headBrightness * trailSegmentFade * lifetimeFade;
-
-                    colors[pointBufferIndex]     = shootingStarParams.color.r * brightness;
-                    colors[pointBufferIndex + 1] = shootingStarParams.color.g * brightness;
-                    colors[pointBufferIndex + 2] = shootingStarParams.color.b * brightness;
-                }
-                needsPosUpdate = true;
-                needsColorUpdate = true;
-                // if (star.id === 0 && star.age % 30 === 0) { // Log one star occasionally
-                //    console.log(`Star 0, Age: ${star.age}, Pos: ${star.headPosition.x.toFixed(1)}, ${star.headPosition.y.toFixed(1)}, Vel: ${star.velocity.x.toFixed(1)}`);
-                // }
-            }
-
-            if (needsPosUpdate) shootingStarGeometry.attributes.position.needsUpdate = true;
-            if (needsColorUpdate) shootingStarGeometry.attributes.color.needsUpdate = true;
-        }
-
-
-        const tempParticlePosVec = new THREE.Vector3();
-        const tempDirectionVec = new THREE.Vector3();
-
-        function animateParticles() {
-            requestAnimationFrame(animateParticles);
-
-            galaxyRotationAngle += fixedParams.particleSpinSpeed;
-            const cosSpinAngle = Math.cos(galaxyRotationAngle);
-            const sinSpinAngle = Math.sin(galaxyRotationAngle);
-
-            if (particleGeometry && particleGeometry.attributes.position && particleGeometry.userData.initialStaticPositions && particleGeometry.userData.basePositions) {
-                const positionsAttribute = particleGeometry.attributes.position;
-                const currentPositionsArray = positionsAttribute.array;
-                const targetBasePositionsArray = particleGeometry.userData.basePositions;
-                const initialStaticPositionsArray = particleGeometry.userData.initialStaticPositions;
-                const velocitiesArray = particleGeometry.userData.velocities;
-                const particleCountValue = Math.floor(fixedParams.particleCount);
-
-                for (let i = 0; i < particleCountValue; i++) {
-                    const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
-                    const staticX = initialStaticPositionsArray[ix];
-                    const staticY = initialStaticPositionsArray[iy];
-                    const staticZ = initialStaticPositionsArray[iz];
-
-                    targetBasePositionsArray[ix] = staticX * cosSpinAngle - staticY * sinSpinAngle;
-                    targetBasePositionsArray[iy] = staticX * sinSpinAngle + staticY * cosSpinAngle;
-                    targetBasePositionsArray[iz] = staticZ;
-                }
-
-                if (fixedParams.mouseRepel && mouse.x !== Infinity && mouse.y !== Infinity) {
-                    if (camera && particlesMesh) {
-                        const vec = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-                        vec.unproject(camera);
-                        const dir = vec.sub(camera.position).normalize();
-                        const distance = -camera.position.z / dir.z; 
-                        mouse3D.copy(camera.position).add(dir.multiplyScalar(distance));
-                        mouse3D.z = 0; 
-                    }
-                } else {
-                    mouse3D.set(Infinity, Infinity, Infinity);
-                }
-
-                for (let i = 0; i < particleCountValue; i++) {
-                    const ix = i * 3, iy = i * 3 + 1, iz = i * 3 + 2;
-                    tempParticlePosVec.set(currentPositionsArray[ix], currentPositionsArray[iy], 0); 
-
-                    if (fixedParams.mouseRepel && fixedParams.repelStrength > 0 && mouse3D.x !== Infinity) {
-                        const distSq = tempParticlePosVec.distanceToSquared(mouse3D);
-                        const repelRadiusFactor = 0.90;
-                        const repelRadiusSq = Math.pow(fixedParams.repelStrength * repelRadiusFactor, 2);
-
-                        if (distSq < repelRadiusSq && distSq > 0.00001) {
-                            const repelEffectiveness = fixedParams.repelStrength * repelRadiusFactor;
-                            const forceFactor = 1 - Math.sqrt(distSq) / repelEffectiveness;
-                            tempDirectionVec.subVectors(tempParticlePosVec, mouse3D).normalize(); 
-                            tempDirectionVec.z = 0; 
-
-                            const displacementMagnitude = forceFactor * fixedParams.repelStrength * (isMobile ? 0.12 : 0.18);
-                            velocitiesArray[ix] += tempDirectionVec.x * displacementMagnitude * 0.1;
-                            velocitiesArray[iy] += tempDirectionVec.y * displacementMagnitude * 0.1;
-                        }
-                    }
-
-                    const springForceFactor = 0.07;
-                    velocitiesArray[ix] += (targetBasePositionsArray[ix] - currentPositionsArray[ix]) * springForceFactor;
-                    velocitiesArray[iy] += (targetBasePositionsArray[iy] - currentPositionsArray[iy]) * springForceFactor;
-                    velocitiesArray[iz] += (targetBasePositionsArray[iz] - currentPositionsArray[iz]) * springForceFactor;
-                    
-                    currentPositionsArray[ix] += velocitiesArray[ix];
-                    currentPositionsArray[iy] += velocitiesArray[iy];
-                    currentPositionsArray[iz] += velocitiesArray[iz];
-                    
-                    const dampingFactor = 0.88;
-                    velocitiesArray[ix] *= dampingFactor;
-                    velocitiesArray[iy] *= dampingFactor;
-                    velocitiesArray[iz] *= dampingFactor; 
-                }
-                positionsAttribute.needsUpdate = true;
-            }
-
-            updateShootingStars(); 
-
-            if (controls) controls.update();
-            if (renderer && scene && camera) renderer.render(scene, camera);
-        }
-
-        function onWindowResizeParticles() {
-            if (camera && renderer) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-        }
-
-        function onMouseMoveParticles(event) {
-            event.preventDefault();
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-        }
-
-        function onTouchMoveParticles(event) {
-            if (event.touches.length > 0) {
-                const touch = event.touches[0];
-                mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = - (touch.clientY / window.innerHeight) * 2 + 1;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const yearSpan = document.getElementById('currentYear');
-            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
-            initParticles();
-        });
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
