@@ -12,19 +12,19 @@
             --neon-blue: #00ccff;
             --neon-blue-rgb: 0, 204, 255;
             --dark-bg-for-glitch: #000000;
-            --text-color: #FFFFFF; /* Main text color, now used more broadly for visibility */
+            --text-color: #FFFFFF; /* Main text color */
             --text-color-muted: #AAAAAA;
             --glitch-color-1: #FF00FF;
             --glitch-color-2: #00FF00;
 
             --font-header: 'Cinzel', serif;
             --font-quote: 'Dancing Script', cursive;
-            --font-links-mentality: 'Orbitron', sans-serif; /* Renamed to avoid clash */
+            --font-links-mentality: 'Orbitron', sans-serif;
             --font-footer: 'Share Tech Mono', monospace;
 
             /* Added for Linktree content integration */
             --linktree-red: #FF3B30;
-            --linktree-white: #FFFFFF; /* Specific white for Linktree, same as --text-color */
+            --linktree-white: #FFFFFF;
             --linktree-red-rgb: 255, 59, 48;
             --linktree-card-bg: rgba(34, 34, 34, 0.85);
             --linktree-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
@@ -39,7 +39,7 @@
         }
 
         body {
-            font-family: var(--font-links-mentality); /* Default font for Mentality page sections */
+            font-family: var(--font-links-mentality);
             color: var(--text-color);
             background-image: url('https://assets.onecompiler.app/43j5j5k35/43j5hyhh4/Mentality.jpg');
             background-size: cover;
@@ -72,7 +72,7 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 680px; /* Slightly increased max-width for new content */
+            max-width: 680px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -82,67 +82,64 @@
         /* Styles for Integrated Linktree Profile Section */
         .linktree-profile-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 40px; /* This margin might need adjustment if image is gone */
             font-family: var(--linktree-font);
         }
         .linktree-profile-section .linktree-profile-pic {
+            /* Previous styles for image, now hidden */
             width: 140px;
             height: 140px;
             border-radius: 50%;
             object-fit: cover;
-            /* border: 3px solid var(--linktree-red); MODIFIED */
-            border: none; /* REMOVED BORDER */
+            border: none;
             margin-bottom: 15px;
-            /* box-shadow: 0 0 15px rgba(var(--linktree-red-rgb), 0.5); MODIFIED */
-            box-shadow: none; /* REMOVED SHADOW */
-            transition: transform 0.3s ease; /* Removed box-shadow from transition */
+            box-shadow: none;
+            transition: transform 0.3s ease;
+            display: none; /* HIDE THE PROFILE IMAGE */
         }
         .linktree-profile-section .linktree-profile-pic:hover {
             transform: scale(1.05);
-            /* box-shadow: 0 0 25px rgba(var(--linktree-red-rgb), 0.8); MODIFIED */
-            box-shadow: none; /* REMOVED SHADOW ON HOVER */
+            box-shadow: none;
         }
         .linktree-profile-section h1.linktree-name {
-            font-size: 32px; /* Adjusted size */
-            margin-bottom: 5px;
+            font-size: 32px;
+            margin-bottom: 10px; /* Adjusted margin */
             font-weight: 700;
-            color: var(--linktree-white); /* Already white, good */
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5); /* Kept shadow for definition */
+            color: var(--neon-blue); /* NEON COLOR */
+            text-shadow: 0 0 6px rgba(var(--neon-blue-rgb), 0.9), 0 0 12px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
         }
         .linktree-profile-section .linktree-title {
-            /* color: var(--linktree-red); MODIFIED */
-            color: var(--text-color); /* CHANGED to white for better contrast */
+            color: var(--neon-blue); /* NEON COLOR */
             font-weight: bold;
-            margin-bottom: 5px;
-            font-size: 22px; /* Adjusted size */
-            /* text-shadow: 0 1px 3px rgba(0,0,0,0.3); MODIFIED */
-            text-shadow: none; /* REMOVED shadow for cleaner white text */
+            margin-bottom: 8px; /* Adjusted margin */
+            font-size: 22px;
+            text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.9), 0 0 10px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
         }
         .linktree-profile-section .linktree-contact {
-            /* color: var(--linktree-white); opacity: 0.85; MODIFIED */
-            color: var(--text-color); /* Explicitly white */
-            opacity: 1; /* Make fully opaque */
+            color: var(--neon-blue); /* NEON COLOR */
+            opacity: 1;
             font-size: 16px;
-            margin-bottom: 15px;
+            margin-bottom: 15px; /* Adjusted margin */
+            text-shadow: 0 0 4px rgba(var(--neon-blue-rgb), 0.9), 0 0 8px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
         }
         .linktree-profile-section .linktree-skills {
-            margin-top: 20px;
-            font-size: 18px; /* Adjusted size */
-            /* color: var(--linktree-red); MODIFIED */
-            color: var(--text-color); /* CHANGED to white */
+            margin-top: 10px; /* Adjusted margin */
+            font-size: 18px;
+            color: var(--neon-blue); /* NEON COLOR */
             font-weight: 600;
+            text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.9), 0 0 10px rgba(var(--neon-blue-rgb), 0.6); /* NEON GLOW */
         }
         .linktree-profile-section .linktree-skills p { margin: 0; }
 
 
         /* Styles for Integrated Linktree Links Section */
-        .links-container#linktree-links-section { /* Keeping original ID for clarity if preferred */
+        .links-container#linktree-links-section {
             display: flex;
             flex-direction: column;
-            gap: 18px; /* Original Linktree gap */
+            gap: 18px;
             width: 100%;
-            max-width: 580px; /* Max width for these links */
-            margin: 0 auto; /* Center the links container */
+            max-width: 580px;
+            margin: 0 auto;
             font-family: var(--linktree-font);
         }
         .linktree-link-item {
@@ -196,10 +193,6 @@
             color: var(--linktree-red);
         }
 
-        /* Mentality Page Original Header (if any other part was to be kept - removed for this integration) */
-        /* .header-section { margin-bottom: 40px; } ... */
-
-        /* Mentality Page Glitch and Title (Removed, but keeping CSS if other elements use it) */
         .title-mentality {
             font-family: var(--font-header); font-size: 4rem; font-weight: 700; color: var(--text-color);
             text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue);
@@ -222,13 +215,11 @@
         @keyframes glitch-anim-2 { /* ...keyframes ... */ 0% { clip: rect(80px, 9999px, 10px, 0); transform: skew(0.2deg); } 5% { clip: rect(8px, 9999px, 7px, 0); transform: skew(0.47deg); } 10% { clip: rect(2px, 9999px, 69px, 0); transform: skew(0.67deg); } 15% { clip: rect(44px, 9999px, 2px, 0); transform: skew(0.21deg); } 20% { clip: rect(40px, 9999px, 45px, 0); transform: skew(0.32deg); } 25% { clip: rect(12px, 9999px, 8px, 0); transform: skew(0.3deg); } 30% { clip: rect(1px, 9999px, 59px, 0); transform: skew(0.47deg); } 35% { clip: rect(29px, 9999px, 9px, 0); transform: skew(0.18deg); } 40% { clip: rect(43px, 9999px, 74px, 0); transform: skew(0.19deg); } 45% { clip: rect(88px, 9999px, 92px, 0); transform: skew(0.43deg); } 50% { clip: rect(10px, 9999px, 72px, 0); transform: skew(0.22deg); } 55% { clip: rect(66px, 9999px, 98px, 0); transform: skew(0.63deg); } 60% { clip: rect(8px, 9999px, 23px, 0); transform: skew(0.34deg); } 65% { clip: rect(1px, 9999px, 48px, 0); transform: skew(0.52deg); } 70% { clip: rect(82px, 9999px, 51px, 0); transform: skew(0.78deg); } 75% { clip: rect(45px, 9999px, 54px, 0); transform: skew(0.22deg); } 80% { clip: rect(2px, 9999px, 76px, 0); transform: skew(0.19deg); } 85% { clip: rect(58px, 9999px, 9px, 0); transform: skew(0.84deg); } 90% { clip: rect(1px, 9999px, 27px, 0); transform: skew(0.74deg); } 95% { clip: rect(59px, 9999px, 20px, 0); transform: skew(0.15deg); } 100% { clip: rect(10px, 9999px, 105px, 0); transform: skew(0.5deg); } }
         @keyframes glitch-skew { /* ...keyframes ... */ 0% { transform: skew(0deg); } 10% { transform: skew(0.2deg); } 20% { transform: skew(-0.1deg); } 80% { transform: skew(0.1deg); } 90% { transform: skew(-0.2deg); } 100% { transform: skew(0deg); } }
 
-        /* Mentality Page Original Quote Styling (if needed for other elements) */
-        .quote { /* This class was used for the Mentality header quote */
+        .quote {
             font-family: var(--font-quote); font-size: 1.5rem; color: var(--text-color-muted);
             margin-bottom: 30px; letter-spacing: 1px; text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.5);
         }
 
-        /* Mentality Page Original Link Button Styling (kept for reference or if other buttons use this style) */
         .link-button {
             background-color: rgba(0,0,0,0.3); color: var(--neon-blue); border: 2px solid var(--neon-blue);
             padding: 15px 20px; text-decoration: none; display: flex; align-items: center; justify-content: center;
@@ -241,33 +232,30 @@
             box-shadow: 0 0 15px var(--neon-blue), 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
             transform: translateY(-3px) scale(1.02);
         }
-        .link-button .link-icon { font-size: 1.3rem; } /* Different from .linktree-link-item .link-icon */
+        .link-button .link-icon { font-size: 1.3rem; }
         .link-button .link-text { flex-grow: 1; text-align: center; }
 
 
         .footer-section {
             margin-top: 50px; padding-bottom: 20px; text-align: center;
-            /* color: var(--text-color-muted); MODIFIED */
-            color: var(--text-color); /* CHANGED to white for better visibility */
+            color: var(--text-color); /* White for better visibility */
             font-size: 0.9rem; font-family: var(--font-footer);
         }
         .footer-section .footer-quote {
             margin-bottom: 15px;
             font-style: italic;
-            /* Inherits color from .footer-section (now --text-color) */
         }
         .footer-icons { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 1.2rem; margin-bottom: 10px; }
         .footer-icons .barcode {
             font-family: monospace;
             font-size: 1rem;
             letter-spacing: -1px;
-            /* Inherits color from .footer-section (now --text-color) */
         }
 
         @media screen and (max-width: 768px) {
-            .title-mentality { font-size: 3rem; } /* Original Mentality title */
-            .quote { font-size: 1.2rem; } /* Original Mentality quote */
-            .link-button { padding: 12px 15px; font-size: 1rem; } /* Original Mentality buttons */
+            .title-mentality { font-size: 3rem; }
+            .quote { font-size: 1.2rem; }
+            .link-button { padding: 12px 15px; font-size: 1rem; }
 
             .linktree-profile-section h1.linktree-name { font-size: 28px; }
             .linktree-profile-section .linktree-title { font-size: 20px; }
@@ -277,11 +265,12 @@
         }
         @media screen and (max-width: 480px) {
             .main-container { max-width: 95%; }
-            .title-mentality { font-size: 2.2rem; } /* Original Mentality title */
-            .quote { font-size: 1rem; } /* Original Mentality quote */
-            .links-container#linktree-links-section { gap: 12px; } /* Linktree links */
+            .title-mentality { font-size: 2.2rem; }
+            .quote { font-size: 1rem; }
+            .links-container#linktree-links-section { gap: 12px; }
 
-            .linktree-profile-section .linktree-profile-pic { width: 100px; height: 100px; }
+            /* Profile image is hidden, so no need to resize it here specifically unless it's made visible again */
+            /* .linktree-profile-section .linktree-profile-pic { width: 100px; height: 100px; } */
             .linktree-profile-section h1.linktree-name { font-size: 22px; }
             .linktree-profile-section .linktree-title { font-size: 18px; }
             .linktree-profile-section .linktree-skills { font-size: 15px; }
