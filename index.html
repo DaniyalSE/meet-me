@@ -3,36 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mentality | Syed Daniyal Haider Naqvi</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Orbitron:wght@500;700&family=Dancing+Script:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Syed Daniyal Haider Naqvi | AI/ML Enthusiast</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --neon-blue: #00ccff;
-            --neon-blue-rgb: 0, 204, 255;
-            --dark-bg-for-glitch: #000000;
-            --text-color: #FFFFFF; /* Main text color */
-            --text-color-muted: #AAAAAA;
-            --glitch-color-1: #FF00FF;
-            --glitch-color-2: #00FF00;
+            --primary-color: #FF3B30;
+            --secondary-color: #50E3C2;
+            --highlight-color: #F5A623;
+            --highlight-color-rgb: 245, 166, 35;
+            --text-color: #FFFFFF;
+            --card-bg: rgba(15, 15, 15, 0.75);
+            --card-border-color: rgba(255, 255, 255, 0.12);
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+            --highlight-shadow: 0 10px 30px rgba(var(--highlight-color-rgb), 0.4);
+            --text-shadow-light: 0 1px 2px rgba(0,0,0,0.6);
+            --text-shadow-heading: 0 2px 5px rgba(0,0,0,0.5);
 
-            /* Pastel-Neon Red variables */
-            --pastel-neon-red: #FFAFAF;
-            --pastel-neon-red-rgb: 255, 175, 175;
+            /* --- UPDATED PARTICLE COLORS --- */
+            --particle-color: rgba(212, 172, 13, 0.75); /* Dark Yellow (e.g., #D4AC0D with alpha) */
+            --line-color: rgba(212, 172, 13, 0.35);   /* Lighter/more transparent dark yellow for lines */
 
-            --font-header: 'Cinzel', serif;
-            --font-quote: 'Dancing Script', cursive;
-            --font-links-mentality: 'Orbitron', sans-serif;
-            --font-footer: 'Share Tech Mono', monospace;
+            /* --- NEW: Skills Text Colors --- */
+            --skills-text-color-base: #C58917; /* Caramel/Dark Golden */
+            --skills-text-color-neon: #FFD700; /* Gold for Neon Glow */
+            --skills-text-glass-highlight: rgba(255, 245, 200, 0.5); /* Light yellow for glassy sheen */
 
-            /* Linktree specific variables */
-            --linktree-red: #FF3B30;
-            --linktree-white: #FFFFFF;
-            --linktree-red-rgb: 255, 59, 48;
-            --linktree-card-bg: rgba(34, 34, 34, 0.85);
-            --linktree-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-            --linktree-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* --- NEW: Profile Picture Animated Border Colors --- */
+            --profile-border-start-color: var(--highlight-color);
+            --profile-border-mid-color: var(--secondary-color);
+            --profile-border-end-color: var(--primary-color);
         }
 
         * {
@@ -42,284 +44,514 @@
         }
 
         body {
-            font-family: var(--font-links-mentality);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-color);
-            background-image: url('https://assets.onecompiler.app/43j5j5k35/43j5hyhh4/Mentality.jpg');
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
             line-height: 1.7;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
+            overflow: hidden;
+            background-image: url('https://assets.onecompiler.app/43j5j5k35/43j7vvpsn/Proche.jpeg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             position: relative;
         }
 
-        body::after { /* Scanlines */
-            content: "";
+        #particleCanvas {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.7;
         }
 
-        .main-container {
+        .linktree-main-content {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             width: 100%;
-            max-width: 680px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
+            padding: 25px;
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
-        /* Styles for Integrated Linktree Profile Section */
-        .linktree-profile-section {
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+         /* Enhanced animation for links */
+        @keyframes fadeInSlideUpMore {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+
+        .profile {
             text-align: center;
             margin-bottom: 40px;
-            font-family: var(--linktree-font);
+            margin-top: 20px;
+            animation: fadeInSlideUp 0.8s ease-out forwards;
+            /* NEW: Added transition for parallax smoothness */
+            transition: transform 0.2s cubic-bezier(0.03, 0.98, 0.52, 0.99);
         }
-        .linktree-profile-section .linktree-profile-pic {
-            width: 140px;
-            height: 140px;
+
+        .profile-pic {
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             object-fit: cover;
-            border: none;
-            margin-bottom: 15px;
-            box-shadow: none;
-            transition: transform 0.3s ease;
-            display: none; /* Profile image is hidden */
+            background-size: cover;
+            background-position: center center;
+            /* border: 5px solid var(--highlight-color); MODIFIED for animated border */
+            margin-bottom: 25px;
+            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease;
+            box-shadow: 0 0 25px rgba(var(--highlight-color-rgb), 0.65), 0 0 40px rgba(var(--highlight-color-rgb), 0.3);
+            position: relative; /* For the pseudo-element border */
+            /* overflow: hidden; Keep visible if ::before is slightly larger for blur */
         }
-        .linktree-profile-section .linktree-profile-pic:hover {
-            transform: scale(1.05);
-            box-shadow: none;
+
+        /* NEW: Animated Gradient Border for Profile Picture */
+        @property --angle {
+          syntax: '<angle>';
+          initial-value: 0deg;
+          inherits: false;
         }
-        .linktree-profile-section h1.linktree-name {
-            font-size: 34px; /* MODIFIED from 32px */
+        .profile-pic::before {
+            content: "";
+            position: absolute;
+            inset: -5px; /* Controls thickness, -5px makes a 5px border effectively */
+            border-radius: 50%;
+            background: conic-gradient(from var(--angle),
+                                        var(--profile-border-start-color),
+                                        var(--profile-border-mid-color),
+                                        var(--profile-border-end-color),
+                                        var(--profile-border-start-color));
+            z-index: -1;
+            animation: spinBorder 4s linear infinite;
+            /* filter: blur(2px); /* Optional: soft blur on border */
+        }
+        @keyframes spinBorder {
+          to { --angle: 360deg; }
+        }
+        .profile:hover .profile-pic::before {
+            animation-duration: 2.5s; /* Speed up spin on profile hover */
+        }
+
+
+        .profile:hover .profile-pic {
+            transform: scale(1.12); /* Existing hover zoom */
+            box-shadow: 0 0 40px rgba(var(--highlight-color-rgb), 0.9), 0 0 60px rgba(var(--highlight-color-rgb), 0.5);
+        }
+
+        .profile h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2rem, 5vw, 2.8rem);
             margin-bottom: 10px;
             font-weight: 700;
-            color: var(--pastel-neon-red);
-            text-shadow: 0 0 8px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 15px rgba(var(--pastel-neon-red-rgb), 0.5);
+            text-shadow: var(--text-shadow-heading);
+            letter-spacing: 0.8px;
         }
-        .linktree-profile-section .linktree-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 24px; /* MODIFIED from 22px */
-            color: var(--pastel-neon-red);
-            text-shadow: 0 0 7px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 12px rgba(var(--pastel-neon-red-rgb), 0.4);
-        }
-        .linktree-profile-section .linktree-contact {
-            opacity: 1;
-            font-size: 18px; /* MODIFIED from 16px */
-            margin-bottom: 15px;
-            color: var(--pastel-neon-red);
-            text-shadow: 0 0 6px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 10px rgba(var(--pastel-neon-red-rgb), 0.4);
-        }
-        .linktree-profile-section .linktree-skills {
-            margin-top: 10px;
-            font-size: 20px; /* MODIFIED from 18px */
+
+        .profile .title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--highlight-color);
             font-weight: 600;
-            color: var(--pastel-neon-red);
-            text-shadow: 0 0 7px rgba(var(--pastel-neon-red-rgb), 0.7), 0 0 12px rgba(var(--pastel-neon-red-rgb), 0.4);
+            margin-bottom: 10px;
+            font-size: clamp(1.2rem, 4vw, 1.7rem);
+            text-shadow: var(--text-shadow-light);
+            letter-spacing: 0.5px;
         }
-        .linktree-profile-section .linktree-skills p { margin: 0; }
 
+        .profile .contact {
+            font-family: 'Roboto Mono', monospace;
+            color: #e0e0e0;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            margin-bottom: 25px;
+            text-shadow: none;
+            font-weight: 500;
+        }
 
-        /* Styles for Integrated Linktree Links Section */
-        .links-container#linktree-links-section {
+        /* --- MODIFIED: Skills Text Styling --- */
+        .profile .skills {
+            margin-top: 20px;
+            font-size: clamp(1.15rem, 3.5vw, 1.45rem);
+            color: var(--skills-text-color-base); /* Base caramel/dark golden */
+            font-weight: 700;
+            text-shadow:
+                /* Neon Glow */
+                0 0 4px var(--skills-text-color-neon),
+                0 0 8px var(--skills-text-color-neon),
+                /* Deeper Glow */
+                0 0 12px rgba(var(--skills-text-color-base), 0.7),
+                /* Glassy Highlight */
+                0px 1px 1.5px var(--skills-text-glass-highlight),
+                /* Original subtle shadow for depth */
+                var(--text-shadow-light);
+            line-height: 1.6;
+            min-height: 2.5em; /* Ensure space for text */
+        }
+        .profile .skills p {
+            margin: 0;
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            background-color: var(--skills-text-color-neon); /* Cursor color matches skills neon */
+            width: 10px;
+            height: 1.45rem; /* Adjusted to match typical font size */
+            animation: blink 0.9s step-end infinite;
+            vertical-align: bottom;
+        }
+
+        @keyframes blink {
+            from, to { background-color: transparent; }
+            50% { background-color: var(--skills-text-color-neon); } /* Match neon part */
+        }
+
+        .links {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 22px;
             width: 100%;
-            max-width: 580px;
-            margin: 20px auto 0;
-            font-family: var(--linktree-font);
+            max-width: 620px;
+            /* animation: fadeInSlideUp 0.8s ease-out 0.4s forwards; opacity: 0; REMOVED for stagger */
+            /* NEW: Added perspective for 3D tilt effect */
+            perspective: 1200px;
         }
-        .linktree-link-item {
-            background-color: var(--linktree-card-bg);
-            color: var(--linktree-white);
-            padding: 18px 22px;
-            border-radius: 12px;
+
+        .link-item {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 22px 28px;
+            border-radius: 18px;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 22px;
-            box-shadow: var(--linktree-shadow);
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-            font-size: 18px;
+            gap: 28px;
+            box-shadow: var(--shadow);
+            /* MODIFIED: Transition for 3D tilt and other properties */
+            transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        background-color 0.25s ease,
+                        box-shadow 0.25s ease,
+                        border-color 0.25s ease;
+            font-size: clamp(1rem, 2.8vw, 1.15rem);
             position: relative;
-            border: 1px solid rgba(255,255,255,0.1);
-            font-weight: bold;
-            text-align: left;
+            border: 1.5px solid var(--card-border-color);
+            backdrop-filter: blur(6px) saturate(130%);
+            -webkit-backdrop-filter: blur(6px) saturate(130%);
+            opacity: 0; /* Initially hidden for stagger animation */
+            animation: fadeInSlideUpMore 0.7s ease-out forwards; /* Using enhanced animation */
         }
-        .linktree-link-item:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(var(--pastel-neon-red-rgb), 0.35);
-            background-color: var(--pastel-neon-red);
-            color: var(--linktree-white);
-            border-color: var(--pastel-neon-red);
+
+        .link-item:hover {
+            /* MODIFIED: Added 3D tilt */
+            transform: translateY(-12px) scale(1.06) rotateX(6deg) rotateY(-3deg);
+            box-shadow: var(--highlight-shadow), 0 0 20px rgba(var(--highlight-color-rgb), 0.3);
+            background-color: rgba(var(--highlight-color-rgb), 0.9);
+            color: #0A0A0A;
+            border-color: rgba(var(--highlight-color-rgb), 0.95);
         }
-        .linktree-link-item .link-icon {
-            font-size: 28px;
-            width: 30px;
+
+        .link-item:hover .link-icon {
+            color: #0A0A0A;
+            transform: scale(1.2) rotate(-6deg);
+            /* NEW: Glowing effect for icon */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7), 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .link-icon {
+            font-size: clamp(1.5rem, 4vw, 1.9rem);
+            transition: color 0.25s ease, transform 0.25s ease, text-shadow 0.25s ease; /* Added text-shadow */
+            width: 38px;
             text-align: center;
-            color: var(--linktree-white);
-            transition: color 0.3s ease;
         }
-         .linktree-link-item:hover .link-icon {
-            color: var(--linktree-white);
-        }
-        .linktree-link-item .link-text {
-            flex: 1;
-        }
-        .linktree-link-item .linktree-badge {
-            background-color: rgba(226, 232, 240, 0.8);
-            color: var(--linktree-red);
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 11px;
+        /* .link-item:hover .link-icon { transform: scale(1.15) rotate(-5deg); } Combined above */
+        .link-text { flex: 1; font-weight: 600; text-shadow: none; }
+
+        .badge {
+            background-color: rgba(var(--highlight-color-rgb), 0.15);
+            color: var(--highlight-color);
+            padding: 5px 14px;
+            border-radius: 18px;
+            font-size: 0.75rem;
             font-weight: 700;
-            margin-left: 8px;
-            transition: color 0.3s ease, background-color 0.3s ease;
+            margin-left: auto;
+            border: 1px solid rgba(var(--highlight-color-rgb), 0.6);
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         }
-        .linktree-link-item:hover .linktree-badge {
-            background-color: var(--linktree-white);
-            color: var(--pastel-neon-red);
-        }
+        .link-item:hover .badge { background-color: var(--text-color); color: #0A0A0A; border-color: var(--text-color); }
 
-        .title-mentality {
-            font-family: var(--font-header); font-size: 4rem; font-weight: 700; color: var(--text-color);
-            text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 40px var(--neon-blue);
-            margin-bottom: 10px; position: relative; letter-spacing: 2px;
+        footer {
+            margin-top: 70px;
+            padding-bottom: 30px;
+            text-align: center;
+            color: #bdbdbd;
+            font-size: 0.9rem;
+            text-shadow: var(--text-shadow-light);
+            animation: fadeInSlideUp 0.8s ease-out forwards; /* Keep existing animation */
+            opacity: 0; /* Initial state for animation */
+            animation-delay: 1.3s; /* MODIFIED: Adjusted delay for link stagger */
         }
-        .glitch { position: relative; animation: glitch-skew 1s infinite linear alternate-reverse; }
-        .glitch::before, .glitch::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: transparent;
-        }
-        .glitch::before {
-            left: 2px; text-shadow: -2px 0 var(--glitch-color-1); clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-        .glitch::after {
-            left: -2px; text-shadow: -2px 0 var(--glitch-color-2), 2px 2px var(--neon-blue); clip: rect(85px, 450px, 140px, 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-        @keyframes glitch-anim { /* ...keyframes ... */ 0% { clip: rect(46px, 9999px, 99px, 0); transform: skew(0.3deg); } 5% { clip: rect(7px, 9999px, 90px, 0); transform: skew(0.82deg); } 10% { clip: rect(72px, 9999px, 8px, 0); transform: skew(0.42deg); } 15% { clip: rect(82px, 9999px, 72px, 0); transform: skew(0.22deg); } 20% { clip: rect(24px, 9999px, 58px, 0); transform: skew(0.76deg); } 25% { clip: rect(2px, 9999px, 59px, 0); transform: skew(0.39deg); } 30% { clip: rect(4px, 9999px, 96px, 0); transform: skew(0.86deg); } 35% { clip: rect(23px, 9999px, 87px, 0); transform: skew(0.73deg); } 40% { clip: rect(16px, 9999px, 8px, 0); transform: skew(0.32deg); } 45% { clip: rect(30px, 9999px, 12px, 0); transform: skew(0.79deg); } 50% { clip: rect(87px, 9999px, 42px, 0); transform: skew(0.47deg); } 55% { clip: rect(3px, 9999px, 93px, 0); transform: skew(0.57deg); } 60% { clip: rect(49px, 9999px, 98px, 0); transform: skew(0.16deg); } 65% { clip: rect(3px, 9999px, 26px, 0); transform: skew(0.19deg); } 70% { clip: rect(48px, 9999px, 65px, 0); transform: skew(0.46deg); } 75% { clip: rect(20px, 9999px, 82px, 0); transform: skew(0.41deg); } 80% { clip: rect(48px, 9999px, 37px, 0); transform: skew(0.78deg); } 85% { clip: rect(7px, 9999px, 48px, 0); transform: skew(0.73deg); } 90% { clip: rect(12px, 9999px, 75px, 0); transform: skew(0.28deg); } 95% { clip: rect(39px, 9999px, 29px, 0); transform: skew(0.71deg); } 100% { clip: rect(85px, 9999px, 14px, 0); transform: skew(0.7deg); } }
-        @keyframes glitch-anim-2 { /* ...keyframes ... */ 0% { clip: rect(80px, 9999px, 10px, 0); transform: skew(0.2deg); } 5% { clip: rect(8px, 9999px, 7px, 0); transform: skew(0.47deg); } 10% { clip: rect(2px, 9999px, 69px, 0); transform: skew(0.67deg); } 15% { clip: rect(44px, 9999px, 2px, 0); transform: skew(0.21deg); } 20% { clip: rect(40px, 9999px, 45px, 0); transform: skew(0.32deg); } 25% { clip: rect(12px, 9999px, 8px, 0); transform: skew(0.3deg); } 30% { clip: rect(1px, 9999px, 59px, 0); transform: skew(0.47deg); } 35% { clip: rect(29px, 9999px, 9px, 0); transform: skew(0.18deg); } 40% { clip: rect(43px, 9999px, 74px, 0); transform: skew(0.19deg); } 45% { clip: rect(88px, 9999px, 92px, 0); transform: skew(0.43deg); } 50% { clip: rect(10px, 9999px, 72px, 0); transform: skew(0.22deg); } 55% { clip: rect(66px, 9999px, 98px, 0); transform: skew(0.63deg); } 60% { clip: rect(8px, 9999px, 23px, 0); transform: skew(0.34deg); } 65% { clip: rect(1px, 9999px, 48px, 0); transform: skew(0.52deg); } 70% { clip: rect(82px, 9999px, 51px, 0); transform: skew(0.78deg); } 75% { clip: rect(45px, 9999px, 54px, 0); transform: skew(0.22deg); } 80% { clip: rect(2px, 9999px, 76px, 0); transform: skew(0.19deg); } 85% { clip: rect(58px, 9999px, 9px, 0); transform: skew(0.84deg); } 90% { clip: rect(1px, 9999px, 27px, 0); transform: skew(0.74deg); } 95% { clip: rect(59px, 9999px, 20px, 0); transform: skew(0.15deg); } 100% { clip: rect(10px, 9999px, 105px, 0); transform: skew(0.5deg); } }
-        @keyframes glitch-skew { /* ...keyframes ... */ 0% { transform: skew(0deg); } 10% { transform: skew(0.2deg); } 20% { transform: skew(-0.1deg); } 80% { transform: skew(0.1deg); } 90% { transform: skew(-0.2deg); } 100% { transform: skew(0deg); } }
-
-        .quote {
-            font-family: var(--font-quote); font-size: 1.5rem; color: var(--text-color-muted);
-            margin-bottom: 30px; letter-spacing: 1px; text-shadow: 0 0 5px rgba(var(--neon-blue-rgb), 0.5);
-        }
-
-        .link-button {
-            background-color: rgba(0,0,0,0.3); color: var(--neon-blue); border: 2px solid var(--neon-blue);
-            padding: 15px 20px; text-decoration: none; display: flex; align-items: center; justify-content: center;
-            gap: 10px; font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; position: relative;
-            transition: all 0.3s ease; box-shadow: 0 0 5px var(--neon-blue), inset 0 0 5px var(--neon-blue);
-            overflow: hidden; backdrop-filter: blur(3px); font-family: var(--font-links-mentality);
-        }
-        .link-button:hover {
-            background-color: var(--neon-blue); color: #000000;
-            box-shadow: 0 0 15px var(--neon-blue), 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
-            transform: translateY(-3px) scale(1.02);
-        }
-        .link-button .link-icon { font-size: 1.3rem; }
-        .link-button .link-text { flex-grow: 1; text-align: center; }
-
-
-        .footer-section {
-            margin-top: 50px; padding-bottom: 20px; text-align: center;
-            color: var(--text-color); /* White for better visibility */
-            font-size: 0.9rem; font-family: var(--font-footer);
-        }
-        .footer-section .footer-quote {
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        .footer-icons { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 1.2rem; margin-bottom: 10px; }
-        .footer-icons .barcode {
-            font-family: monospace;
-            font-size: 1rem;
-            letter-spacing: -1px;
-        }
+        footer a { color: var(--highlight-color); text-decoration: none; transition: color 0.3s ease; }
+        footer a:hover { color: var(--text-color); }
 
         @media screen and (max-width: 768px) {
-            .title-mentality { font-size: 3rem; }
-            .quote { font-size: 1.2rem; }
-            .link-button { padding: 12px 15px; font-size: 1rem; }
-
-            .linktree-profile-section h1.linktree-name { font-size: 30px; } /* MODIFIED from 28px */
-            .linktree-profile-section .linktree-title { font-size: 22px; } /* MODIFIED from 20px */
-            .linktree-profile-section .linktree-skills { font-size: 19px; } /* MODIFIED from 17px */
-            /* .linktree-contact font size will inherit or use its base of 18px */
-
-            .linktree-link-item { font-size: 16px; padding: 15px 20px; gap: 15px; }
-            .linktree-link-item .link-icon { font-size: 24px; }
+            .profile-pic { width: 140px; height: 140px; /* border-width: 4px; (using pseudo border now) */}
+            .profile-pic::before { inset: -4px; }
+            .links { gap: 18px; max-width: 92%; }
+            .link-item { padding: 18px 22px; gap: 20px; border-radius: 15px; }
         }
         @media screen and (max-width: 480px) {
-            .main-container { max-width: 95%; }
-            .title-mentality { font-size: 2.2rem; }
-            .quote { font-size: 1rem; }
-            .links-container#linktree-links-section { gap: 12px; }
-
-            .linktree-profile-section h1.linktree-name { font-size: 24px; } /* MODIFIED from 22px */
-            .linktree-profile-section .linktree-title { font-size: 20px; } /* MODIFIED from 18px */
-            .linktree-profile-section .linktree-skills { font-size: 17px; } /* MODIFIED from 15px */
-            /* .linktree-contact font size will inherit or use its base of 18px */
-
-            .linktree-link-item { font-size: 14px; padding: 12px 15px; }
-            .linktree-link-item .link-icon { font-size: 20px; }
+            body { padding: 15px; }
+            .linktree-main-content { padding: 20px 15px; }
+            .profile-pic { width: 110px; height: 110px; margin-bottom: 20px; /* border-width: 3px; */}
+            .profile-pic::before { inset: -3px; }
+            .profile h1 { letter-spacing: 0.5px; }
+            .links { gap: 15px; }
+            .link-item { padding: 16px 18px; border-radius: 12px; gap: 15px; }
+            .badge { padding: 4px 10px; font-size: 0.7rem; }
+            footer { margin-top: 50px; font-size: 0.8rem;}
+            .typewriter-cursor { height: 1.3rem; }
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="linktree-profile-section">
-            <img src="https://media.licdn.com/dms/image/D4D03AQH1X2Xn9n-YCA/profile-displayphoto-shrink_400_400/0/1708024768037?e=1721260800&v=beta&t=11_vY4n0AfvM10jXJ3vK6VTk5z75p_x_o8rtNuq_CMk" alt="Syed Daniyal Haider Naqvi" class="linktree-profile-pic">
-            <h1 class="linktree-name">Syed Daniyal Haider Naqvi</h1>
-            <div class="linktree-title">AI/ML Enthusiast | Developer</div>
-            <div class="linktree-contact">naqvidaniya598@gmail.com</div>
-            <div class="linktree-skills"><p>AI/ML | Deep Learning | Python | CV</p></div>
-        </div>
+    <canvas id="particleCanvas"></canvas>
 
-        <div class="links-container" id="linktree-links-section">
-            <a href="https://www.linkedin.com/in/syeddaniyalnaqvi/" class="linktree-link-item" target="_blank">
-                <span class="link-icon"><i class="fab fa-linkedin-in"></i></span> <span class="link-text">LinkedIn Profile</span>
-            </a>
-            <a href="https://github.com/DaniyalSE" class="linktree-link-item" target="_blank">
-                <span class="link-icon"><i class="fab fa-github"></i></span> <span class="link-text">GitHub Profile</span>
-            </a>
-            <a href="https://drive.google.com/file/d/1VM9R6AureqCIAF5p3Hmr04GWhYPrdzXz/view?usp=sharing" class="linktree-link-item" target="_blank">
-                <span class="link-icon"><i class="fas fa-file-pdf"></i></span> <span class="link-text">View Resume</span> <span class="linktree-badge">PDF</span>
-            </a>
-            <a href="mailto:naqvidaniya598@gmail.com" class="linktree-link-item" target="_blank">
-                <span class="link-icon"><i class="fas fa-envelope"></i></span> <span class="link-text">Contact Me</span>
-            </a>
-        </div>
-
-        <footer class="footer-section">
-            <div class="footer-icons">
-                <span class="barcode">[█║▌│█│║▌║││█║▌│║▌║]</span>
-                <i class="fas fa-recycle"></i>
+    <div class="linktree-main-content">
+        <div class="profile">
+            <div class="profile-pic" style="background-image: url('https://media.licdn.com/dms/image/D4D03AQH1X2Xn9n-YCA/profile-displayphoto-shrink_400_400/0/1708024768037?e=1721260800&v=beta&t=11_vY4n0AfvM10jXJ3vK6VTk5z75p_x_o8rtNuq_CMk');"></div>
+            <h1>Syed Daniyal Haider Naqvi</h1>
+            <div class="title">AI/ML Enthusiast | Developer</div>
+            <div class="contact">naqvidaniya598@gmail.com</div>
+            <div class="skills">
+                <p id="skills-text"></p><span class="typewriter-cursor"></span>
             </div>
-            <p class="footer-quote">“Your deeds are like your monuments. Built with memories instead of with stone.”</p>
-            <p>&copy; <span id="currentYear"></span> Syed Daniyal Haider Naqvi. All rights reserved (or chosen license).</p> </footer>
+        </div>
+
+        <div class="links">
+            <a href="https://www.linkedin.com/in/syeddaniyalnaqvi/" class="link-item" target="_blank">
+                <div class="link-icon"><i class="fab fa-linkedin-in"></i></div>
+                <div class="link-text">LinkedIn Profile</div>
+            </a>
+            <a href="https://github.com/DaniyalSE" class="link-item" target="_blank">
+                <div class="link-icon"><i class="fab fa-github"></i></div>
+                <div class="link-text">GitHub Profile</div>
+            </a>
+            <a href="https://drive.google.com/file/d/1VM9R6AureqCIAF5p3Hmr04GWhYPrdzXz/view?usp=sharing" class="link-item" target="_blank">
+                <div class="link-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="link-text">View Resume</div>
+                <div class="badge">PDF</div>
+            </a>
+            <a href="mailto:naqvidaniya598@gmail.com" class="link-item" target="_blank">
+                <div class="link-icon"><i class="fas fa-envelope"></i></div>
+                <div class="link-text">Contact Me</div>
+            </a>
+        </div>
+
+        <footer>
+            <p>© <span id="currentYear"></span> Syed Daniyal Haider Naqvi.</p>
+        </footer>
     </div>
 
     <script>
         document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function typeWriterEffect() {
+            const skillsElement = document.getElementById('skills-text');
+            if (!skillsElement) return;
+            const textToType = "AI/ML | Deep Learning | Python | CV";
+            let i = 0;
+            const speed = 100; // Typing speed in ms
+            function type() {
+                if (i < textToType.length) {
+                    skillsElement.innerHTML += textToType.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            setTimeout(type, 1000); // Delay to sync with content reveal animation (profile animation is 0.8s)
+        }
+
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        const numberOfParticles = 70;
+        const mouse = { x: null, y: null, radius: 100 };
+
+        window.addEventListener('mousemove', function(event){
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+        });
+        window.addEventListener('mouseout', function(){
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+
+        class Particle {
+            constructor(x, y, size, color, speedX, speedY){
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.color = color;
+                this.speedX = speedX;
+                this.speedY = speedY;
+            }
+            draw(){
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            update(){
+                if(this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if(this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 2;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 2;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 2;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 2;
+                }
+            }
+        }
+
+        function initParticles(){
+            particlesArray = [];
+            let particleColor = getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim() || 'rgba(212, 172, 13, 0.75)';
+            for(let i = 0; i < numberOfParticles; i++){
+                let size = Math.random() * 2.5 + 1;
+                let x = Math.random() * (innerWidth - size * 2) + size;
+                let y = Math.random() * (innerHeight - size * 2) + size;
+                let speedX = (Math.random() * 0.4) - 0.2;
+                let speedY = (Math.random() * 0.4) - 0.2;
+                particlesArray.push(new Particle(x, y, size, particleColor, speedX, speedY));
+            }
+        }
+
+        function connectParticles(){
+            let lineColor = getComputedStyle(document.documentElement).getPropertyValue('--line-color').trim() || 'rgba(212, 172, 13, 0.35)';
+            for(let a = 0; a < particlesArray.length; a++){
+                for(let b = a; b < particlesArray.length; b++){
+                    let dx = particlesArray[a].x - particlesArray[b].x;
+                    let dy = particlesArray[a].y - particlesArray[b].y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    if(distance < 100){
+                        ctx.strokeStyle = lineColor;
+                        ctx.lineWidth = 0.2;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+                if (mouse.x && mouse.y) {
+                    let dxMouse = particlesArray[a].x - mouse.x;
+                    let dyMouse = particlesArray[a].y - mouse.y;
+                    let distanceMouse = Math.sqrt(dxMouse*dxMouse + dyMouse*dyMouse);
+                    if (distanceMouse < mouse.radius + 50) {
+                         ctx.strokeStyle = lineColor;
+                         ctx.lineWidth = 0.15;
+                         ctx.beginPath();
+                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                         ctx.lineTo(mouse.x, mouse.y);
+                         ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles(){
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            for(let i = 0; i < particlesArray.length; i++){
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', function(){
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            mouse.radius = 100;
+            initParticles();
+        });
+
+        // --- NEW: Stagger Animation for Link Items ---
+        function staggerLinkAnimations() {
+            const linkItemsForStagger = document.querySelectorAll('.links .link-item');
+            linkItemsForStagger.forEach((item, index) => {
+                // Base delay should account for profile animation + initial pause
+                item.style.animationDelay = `${0.8 + index * 0.12}s`;
+            });
+        }
+
+        // --- NEW: Subtle Mouse-Move Parallax for Profile Section ---
+        function profileParallax() {
+            const profileSection = document.querySelector('.profile');
+            if (profileSection) {
+                const parallaxIntensity = 0.008; // Softer intensity
+                const maxOffset = 12;       // Max pixels to move
+                const rotationIntensity = 0.05; // Intensity for slight rotation
+
+                document.addEventListener('mousemove', (e) => {
+                    if (window.innerWidth < 768) { // Disable on mobile for performance/usability
+                         requestAnimationFrame(() => {
+                            profileSection.style.transform = 'translate(0px, 0px) rotateX(0deg) rotateY(0deg)';
+                        });
+                        return;
+                    }
+
+                    const x = (window.innerWidth / 2 - e.clientX) * parallaxIntensity;
+                    const y = (window.innerHeight / 2 - e.clientY) * parallaxIntensity;
+
+                    const clampedX = Math.max(-maxOffset, Math.min(maxOffset, x));
+                    const clampedY = Math.max(-maxOffset, Math.min(maxOffset, y));
+
+                    requestAnimationFrame(() => {
+                        // The initial fadeInSlideUp animation sets transform: translateY(0)
+                        // We need to preserve this if we are only adding parallax to it.
+                        // However, the animation ends and sets transform to its final state.
+                        // The CSS transition on .profile will smooth this out.
+                        profileSection.style.transform = `translate(${clampedX}px, ${clampedY}px) rotateX(${clampedY * rotationIntensity}deg) rotateY(${clampedX * -rotationIntensity}deg)`;
+                    });
+                });
+                 document.addEventListener('mouseleave', () => { // Reset when mouse leaves window
+                     requestAnimationFrame(() => {
+                        profileSection.style.transform = 'translate(0px, 0px) rotateX(0deg) rotateY(0deg)';
+                    });
+                });
+            }
+        }
+
+
+        initParticles();
+        animateParticles();
+
+        window.onload = function() {
+            typeWriterEffect();
+            staggerLinkAnimations(); // Initialize link stagger
+            profileParallax(); // Initialize profile parallax
+        };
+
     </script>
 </body>
 </html>
